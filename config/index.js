@@ -22,14 +22,25 @@ export default {
     "sewing pattern"
   ],
   optionGroups: {
-    fit: ["size"]
+    fit: ["chestEase", "waistEase"]
   },
-  measurements: [],
+  measurements: [
+    "bustSpan",
+    "chest",
+    "highBust",
+    "hpsToBust",
+    "hpsToWaistBack",
+    "hpsToWaistFront",
+    "shoulderSlope",
+    "waist",
+    "shoulderToShoulder"
+  ],
   dependencies: {},
   inject: {},
   hide: [],
-  parts: ["box"],
+  parts: ["base", "back"],
   options: {
-    size: { pct: 50, min: 10, max: 100 }
+    chestEase: { pct: 10, min: 5, max: 25 },
+    waistEase: { pct: 10, min: 5, max: 25 }
   }
 };
