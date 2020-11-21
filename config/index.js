@@ -37,7 +37,7 @@ export default {
   ],
   dependencies: {},
   inject: {},
-  hide: [],
+  hide: ["back"],
   parts: ["base", "back"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
