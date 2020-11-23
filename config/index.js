@@ -25,6 +25,7 @@ export default {
     fit: ["chestEase", "waistEase"]
   },
   measurements: [
+    "neck",
     "bustSpan",
     "chest",
     "highBust",
@@ -35,10 +36,13 @@ export default {
     "waist",
     "shoulderToShoulder"
   ],
-  dependencies: {},
+  dependencies: {
+    base: "neckBase",
+    back: "base"
+  },
   inject: {},
-  hide: ["back"],
-  parts: ["base", "back"],
+  hide: ["base", "back"],
+  parts: ["neckBase", "base", "back"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
     waistEase: { pct: 10, min: 5, max: 25 }
