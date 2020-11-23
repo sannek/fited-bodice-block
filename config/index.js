@@ -28,21 +28,25 @@ export default {
     "neck",
     "bustSpan",
     "chest",
+    "bustFront",
     "highBust",
     "hpsToBust",
     "hpsToWaistBack",
     "hpsToWaistFront",
     "shoulderSlope",
     "waist",
+    "waistBack",
     "shoulderToShoulder"
   ],
   dependencies: {
-    neckBase: "base",
-    base: "back"
+    base: "neckBase",
+    back: "base"
   },
-  inject: {},
-  hide: ["back", "neckBase"],
-  parts: ["base", "back"],
+  inject: {
+    back: "base"
+  },
+  hide: ["neckBase"],
+  parts: ["back"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
     waistEase: { pct: 10, min: 5, max: 25 }

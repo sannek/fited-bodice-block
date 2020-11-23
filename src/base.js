@@ -28,7 +28,7 @@ export default function (part) {
   const RIGHT = 0;
   const LEFT = 180;
 
-  const { chest, waist, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
+  const { bustFront, chest, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
   const { chestEase, waistEase } = options;
 
   const frontNeckDepth = store.get("frontNeckDepth");
@@ -40,14 +40,13 @@ export default function (part) {
 
   const hbw = chest / 20;
   const finalChest = chest * chestEaseFactor;
-  const frontChest = finalChest / 4 + hbw / 2
-  const finalWaist = waist * waistEaseFactor;
+  const finalFrontChest = bustFront * chestEaseFactor;
 
   points.origin = new Point(0, 0);
 
   // chest line
   points.a = points.origin.shift(DOWN, hpsToWaistFront / 2);
-  points.c = points.a.shift(RIGHT, frontChest);
+  points.c = points.a.shift(RIGHT, finalFrontChest / 2);
   points.b = points.a.shift(RIGHT, finalChest / 2);
   points.cBeam = points.c.shift(UP, BEAM);
 
@@ -58,7 +57,6 @@ export default function (part) {
   const frontAngle = 90 - points.a.angle(points.m);
 
   points.d = points.m.shift(DOWN - frontAngle, hpsToWaistFront - frontNeckDepth);
-  points.ff = points.d.shift(RIGHT - frontAngle, frontChest - 0.5 * hbw);
   points.m2 = points.m.shift(UP - frontAngle, frontNeckDepth);
   points.sf = points.m2.shift(RIGHT - frontAngle, neckWidth);
   points.sfBeam = points.sf.shift(RIGHT - shoulderSlope - frontAngle, BEAM);
@@ -76,7 +74,6 @@ export default function (part) {
   points.sbBeam = points.sb.shift(LEFT + shoulderSlope, BEAM);
 
   points.e = points.n.shift(DOWN, hpsToWaistBack - backNeckDepth);
-  points.fb = points.e.shift(LEFT, finalChest / 2 - frontChest - 0.5 * hbw);
   points.s0b = utils.beamsIntersect(points.c, points.cBeam, points.n1, points.sb);
   points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.sb, points.sbBeam);
 
@@ -100,8 +97,9 @@ export default function (part) {
     points.x0 = points.t0f.shift(DOWN, (hpsToWaistBack - backNeckDepth) / 3);
   }
 
-  points.x = points.x0.shift(DOWN, hbw * 1.5 * chestEaseFactor);
+  points.x = points.x0.shift(DOWN, hbw * chestEaseFactor);
 
+  /* paths for debugging
   paths.chestLine = new Path()
     .move(points.a)
     .line(points.c)
@@ -112,26 +110,12 @@ export default function (part) {
     .line(points.sf)
     .line(points.m)
     .line(points.d)
-    .line(points.ff)
-    .line(points.x)
 
   paths.backBase = new Path()
     .move(points.tb)
     .line(points.sb)
     .line(points.n1)
     .line(points.e)
-    .line(points.fb)
-    .line(points.x)
-
-  // Complete?
-  if (complete) {
-    if (sa) {
-    }
-  }
-
-  // Paperless?
-  if (paperless) {
-  }
-
+  */
   return part
 }
