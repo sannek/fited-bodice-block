@@ -28,7 +28,7 @@ export default function (part) {
   const RIGHT = 0;
   const LEFT = 180;
 
-  const { bustFront, chest, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
+  const { bustFront, chest, waist, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
   const { chestEase, waistEase } = options;
 
   const frontNeckDepth = store.get("frontNeckDepth");
@@ -38,56 +38,82 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const waistEaseFactor = 1 + waistEase;
 
-  const hbw = chest / 20;
-  const finalChest = chest * chestEaseFactor;
-  const finalFrontChest = bustFront * chestEaseFactor;
+  const HBW = chest / 20;
+
+  // set up measurements already for half pattern
+  const finalChest = 0.5 * chest * chestEaseFactor;
+  const finalFrontChest = 0.5 * bustFront * chestEaseFactor;
+  const finalBackChest = finalChest - finalFrontChest;
+  const finalWaist = 0.5 * waist * waistEaseFactor;
 
   points.origin = new Point(0, 0);
 
   // chest line
   points.a = points.origin.shift(DOWN, hpsToWaistFront / 2);
-  points.c = points.a.shift(RIGHT, finalFrontChest / 2);
-  points.b = points.a.shift(RIGHT, finalChest / 2);
+  points.b = points.a.shift(RIGHT, finalChest);
+  points.c = points.a.shift(RIGHT, finalFrontChest);
   points.cBeam = points.c.shift(UP, BEAM);
 
-  // front key points
-  points.m1 = points.a.shift(UP, (hpsToWaistFront - frontNeckDepth) / 2);
-  points.m = points.m1.shift(RIGHT, hbw / 2);
+  // BODICE BACK POINTS
+  const lengthDiff = (hpsToWaistBack - backNeckDepth) - (hpsToWaistFront - frontNeckDepth);
+  const addToBackWaistHeight = lengthDiff * chest * 0.0005;
 
-  const frontAngle = 90 - points.a.angle(points.m);
+  const finalBackWaist = 0.5 * waistBack * waistEaseFactor;
+  store.set("finalBackWaist", finalBackWaist)
+  const backWaistDiff = finalBackChest - finalBackWaist;
+  let backWaist;
 
-  points.d = points.m.shift(DOWN - frontAngle, hpsToWaistFront - frontNeckDepth);
-  points.m2 = points.m.shift(UP - frontAngle, frontNeckDepth);
-  points.sf = points.m2.shift(RIGHT - frontAngle, neckWidth);
-  points.sfBeam = points.sf.shift(RIGHT - shoulderSlope - frontAngle, BEAM);
+  if (backWaistDiff <= HBW * 0.5) {
+    backWaist = finalBackWaist;
+  } else {
+    backWaist = finalBackChest - backWaistDiff / 2
+  }
 
-  points.s0f = utils.beamsIntersect(points.c, points.cBeam, points.m2, points.sf);
-  points.t0f = utils.beamsIntersect(points.c, points.cBeam, points.sf, points.sfBeam);
+  points.centerBackNeck = points.b.shift(UP, (hpsToWaistFront - backNeckDepth) / 2 + addToBackWaistHeight);
+  points.n1 = points.centerBackNeck.shift(UP, backNeckDepth);
+  points.hpsBack = points.n1.shift(LEFT, neckWidth);
+  points.sbBeam = points.hpsBack.shift(LEFT + shoulderSlope, BEAM);
 
-  // back key points
-  const difference = (hpsToWaistBack - backNeckDepth) - (hpsToWaistFront - frontNeckDepth);
-  const addToBackWaistHeight = difference * chest * 0.0005;
-
-  points.n = points.b.shift(UP, (hpsToWaistFront - backNeckDepth) / 2 + addToBackWaistHeight);
-  points.n1 = points.n.shift(UP, backNeckDepth);
-  points.sb = points.n1.shift(LEFT, neckWidth);
-  points.sbBeam = points.sb.shift(LEFT + shoulderSlope, BEAM);
-
-  points.e = points.n.shift(DOWN, hpsToWaistBack - backNeckDepth);
-  points.s0b = utils.beamsIntersect(points.c, points.cBeam, points.n1, points.sb);
-  points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.sb, points.sbBeam);
+  points.centerBackWaist = points.centerBackNeck.shift(DOWN, hpsToWaistBack - backNeckDepth);
+  points.sideBackWaist = points.centerBackWaist.shift(LEFT, backWaist);
+  points.s0b = utils.beamsIntersect(points.c, points.cBeam, points.n1, points.hpsBack);
+  points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.hpsBack, points.sbBeam);
 
   // finalize back shoulder
-  points.t00b = points.n.shift(LEFT, shoulderToShoulder / 2);
+  points.t00b = points.centerBackNeck.shift(LEFT, shoulderToShoulder / 2);
   points.t00bBeam = points.t00b.shift(DOWN, BEAM);
 
-  points.tb = utils.beamsIntersect(points.sb, points.sbBeam, points.t00b, points.t00bBeam);
+  points.shoulderBack = utils.beamsIntersect(points.hpsBack, points.sbBeam, points.t00b, points.t00bBeam);
+  const backShoulderWidth = points.shoulderBack.dist(points.hpsBack);
 
-  // finalize front shoulder
-  const backShoulderWidth = points.tb.dist(points.sb);
+  // BODICE FRONT POINTS
+  const finalFrontWaist = finalWaist - finalBackWaist;
+  store.set("finalFrontWaist", finalFrontWaist);
+  const frontWaistDiff = finalFrontChest - finalFrontWaist;
+  let frontWaist;
+
+  if (frontWaistDiff <= HBW * 0.8) {
+    frontWaist = finalFrontWaist;
+  } else {
+    frontWaist = finalFrontChest - frontWaistDiff / 2
+  }
+  points.m1 = points.a.shift(UP, (hpsToWaistFront - frontNeckDepth) / 2);
+  points.centerFrontNeck = points.m1.shift(RIGHT, HBW / 2);
+
+  const frontAngle = 90 - points.a.angle(points.centerFrontNeck);
+  store.set("frontAngle", frontAngle);
+
+  points.centerFrontWaist = points.centerFrontNeck.shift(DOWN - frontAngle, hpsToWaistFront - frontNeckDepth);
+  points.sideFrontWaist = points.centerFrontWaist.shift(RIGHT - frontAngle, frontWaist);
+  points.m2 = points.centerFrontNeck.shift(UP - frontAngle, frontNeckDepth);
+  points.hpsFront = points.m2.shift(RIGHT - frontAngle, neckWidth);
+  points.sfBeam = points.hpsFront.shift(RIGHT - shoulderSlope - frontAngle, BEAM);
+
+  points.s0f = utils.beamsIntersect(points.c, points.cBeam, points.m2, points.hpsFront);
+  points.t0f = utils.beamsIntersect(points.c, points.cBeam, points.hpsFront, points.sfBeam);
 
   // front shoulder is approx 1cm narrower than back shoulder
-  points.tf = points.sf.shiftTowards(points.t0f, backShoulderWidth - chest * 0.01)
+  points.shoulderFront = points.hpsFront.shiftTowards(points.t0f, backShoulderWidth - chest * 0.01)
 
 
   // calculate armhole depth - use highest shoulder help point
@@ -97,25 +123,31 @@ export default function (part) {
     points.x0 = points.t0f.shift(DOWN, (hpsToWaistBack - backNeckDepth) / 3);
   }
 
-  points.x = points.x0.shift(DOWN, hbw * chestEaseFactor);
+  points.underArmSide = points.x0.shift(DOWN, HBW * 1.25 * chestEaseFactor);
 
-  /* paths for debugging
-  paths.chestLine = new Path()
-    .move(points.a)
-    .line(points.c)
-    .line(points.b)
+  store.set("sideSeamLength", points.sideBackWaist.dist(points.underArmSide));
 
-  paths.frontBase = new Path()
-    .move(points.tf)
-    .line(points.sf)
-    .line(points.m)
-    .line(points.d)
+  // DEBUG PATHS
+  // paths.chestLine = new Path()
+  //   .move(points.a)
+  //   .line(points.c)
+  //   .line(points.b)
 
-  paths.backBase = new Path()
-    .move(points.tb)
-    .line(points.sb)
-    .line(points.n1)
-    .line(points.e)
-  */
+  // paths.frontBase = new Path()
+  //   .move(points.shoulderFront)
+  //   .line(points.hpsFront)
+  //   .line(points.centerFrontNeck)
+  //   .line(points.centerFrontWaist)
+  //   .line(points.sideFrontWaist)
+  //   .line(points.underArmSide)
+
+  // paths.backBase = new Path()
+  //   .move(points.shoulderBack)
+  //   .line(points.hpsBack)
+  //   .line(points.centerBackNeck)
+  //   .line(points.centerBackWaist)
+  //   .line(points.sideBackWaist)
+  //   .line(points.underArmSide)
+
   return part
 }
