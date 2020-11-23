@@ -119,8 +119,6 @@ export default function (part) {
 
   store.set("sideSeamLength", points.sideBackWaist.dist(points.underArmSide));
 
-  console.log({ backShoulderWidth });
-
   // DEBUG PATHS
   // paths.chestLine = new Path()
   //   .move(points.a)

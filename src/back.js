@@ -21,7 +21,7 @@ export default function (part) {
   const { chestEase } = options;
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
-  points.nCp = points.centerBackNeck.shift(LEFT, HBW * 0.3);
+  points.nCp = points.centerBackNeck.shift(LEFT, HBW * 0.4);
   points.sCp = points.hpsBack.shift(DOWN + shoulderSlope, HBW * 0.4);
 
   const sideSeamAngle = 90 - points.sideBackWaist.angle(points.underArmSide);

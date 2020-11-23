@@ -37,7 +37,7 @@ export default function (part) {
     neckWidth *= tweak;
 
     points.n = points.origin.shift(DOWN, backNeckDepth);
-    points.nCp = points.n.shift(RIGHT, hbw * 0.3);
+    points.nCp = points.n.shift(RIGHT, hbw * 0.4);
 
     points.m = points.origin.shift(DOWN, frontNeckDepth);
     points.mCp = points.m.shift(RIGHT, hbw * 0.8);
