@@ -1,5 +1,4 @@
-import back from "./back";
-
+import { RIGHT, DOWN } from './constants';
 export default function (part) {
   let {
     options,
@@ -17,11 +16,6 @@ export default function (part) {
     utils,
     store
   } = part.shorthand()
-
-  const DOWN = -90;
-  const UP = 90;
-  const RIGHT = 0;
-  const LEFT = 180;
 
   const { neck, chest, shoulderSlope } = measurements;
   const hbw = chest / 20;
@@ -49,7 +43,7 @@ export default function (part) {
     points.mCp = points.m.shift(RIGHT, hbw * 0.8);
 
     points.s = points.origin.shift(RIGHT, neckWidth);
-    points.sCp = points.s.shift(DOWN - shoulderSlope, hbw * 0.3)
+    points.sCp = points.s.shift(DOWN - shoulderSlope, hbw * 0.4)
 
     paths.neck = new Path()
       .move(points.m)

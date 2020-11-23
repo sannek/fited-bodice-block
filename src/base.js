@@ -1,3 +1,5 @@
+import { RIGHT, LEFT, UP, DOWN } from './constants';
+
 export default function (part) {
   let {
     options,
@@ -16,19 +18,9 @@ export default function (part) {
     store
   } = part.shorthand()
 
-  /*
-  TODOS
-  - calculate waist points ff and fb based on real waist measurement (account for waist > chest)
-  - maybe use frontChest and frontWaist instead of just chest? -> better result with larger bust?
-  */
-
   const BEAM = 100 // only used for making beams for easy reading
-  const DOWN = -90;
-  const UP = 90;
-  const RIGHT = 0;
-  const LEFT = 180;
 
-  const { bustFront, chest, waist, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
+  const { chest, waist, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
   const { chestEase, waistEase } = options;
 
   const frontNeckDepth = store.get("frontNeckDepth");
@@ -42,7 +34,7 @@ export default function (part) {
 
   // set up measurements already for half pattern
   const finalChest = 0.5 * chest * chestEaseFactor;
-  const finalFrontChest = 0.5 * bustFront * chestEaseFactor;
+  const finalFrontChest = 0.5 * finalChest + 0.5 * HBW;
   const finalBackChest = finalChest - finalFrontChest;
   const finalWaist = 0.5 * waist * waistEaseFactor;
 
@@ -80,7 +72,7 @@ export default function (part) {
   points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.hpsBack, points.sbBeam);
 
   // finalize back shoulder
-  points.t00b = points.centerBackNeck.shift(LEFT, shoulderToShoulder / 2);
+  points.t00b = points.centerBackNeck.shift(LEFT, shoulderToShoulder / 2 - chest * 0.01);
   points.t00bBeam = points.t00b.shift(DOWN, BEAM);
 
   points.shoulderBack = utils.beamsIntersect(points.hpsBack, points.sbBeam, points.t00b, points.t00bBeam);
@@ -126,6 +118,8 @@ export default function (part) {
   points.underArmSide = points.x0.shift(DOWN, HBW * 1.25 * chestEaseFactor);
 
   store.set("sideSeamLength", points.sideBackWaist.dist(points.underArmSide));
+
+  console.log({ backShoulderWidth });
 
   // DEBUG PATHS
   // paths.chestLine = new Path()

@@ -1,3 +1,5 @@
+import { LEFT, DOWN, RIGHT } from './constants';
+
 export default function (part) {
   let {
     options,
@@ -15,16 +17,27 @@ export default function (part) {
     utils
   } = part.shorthand()
 
-  const DOWN = -90;
-  const UP = 90;
-  const LEFT = 180;
-  const RIGHT = -180;
+  const { chest, shoulderSlope } = measurements;
+  const { chestEase } = options;
+  const chestEaseFactor = 1 + chestEase;
+  const HBW = chest / 20;
+  points.nCp = points.centerBackNeck.shift(LEFT, HBW * 0.3);
+  points.sCp = points.hpsBack.shift(DOWN + shoulderSlope, HBW * 0.4);
 
-  const { chest, hpsToWaistFront, hpsToWaistBack, waist, shoulderToShoulder, shoulderSlope } = measurements;
+  const sideSeamAngle = 90 - points.sideBackWaist.angle(points.underArmSide);
 
-  const hbw = chest / 20;
-  const backChest = chest / 4 - (chest * 0.02);
+  points.uCp = points.underArmSide.shift(RIGHT - sideSeamAngle, HBW * 1.2 * chestEaseFactor);
+  points.tCp = points.shoulderBack.shift(DOWN + shoulderSlope, HBW * 1.2);
 
+
+  paths.backBase = new Path()
+    .move(points.hpsBack)
+    .curve(points.sCp, points.nCp, points.centerBackNeck)
+    .line(points.centerBackWaist)
+    .line(points.sideBackWaist)
+    .line(points.underArmSide)
+    .curve(points.uCp, points.tCp, points.shoulderBack)
+    .close()
 
   // Complete?
   if (complete) {
