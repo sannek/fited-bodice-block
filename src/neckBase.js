@@ -35,8 +35,6 @@ export default function (part) {
   let tweak = 1;
   let delta;
 
-  console.log({ chest, neck })
-
   points.origin = new Point(0, 0);
 
   do {
@@ -61,8 +59,6 @@ export default function (part) {
     delta = paths.neck.length() - target;
     tweak = delta > 0 ? tweak * 0.99 : tweak * 1.01;
   } while (Math.abs(delta) > 1);
-
-  console.log({ chest, neck, frontNeckDepth, backNeckDepth, neckWidth })
 
   store.set("frontNeckDepth", frontNeckDepth + chest * 0.01)
   store.set("backNeckDepth", backNeckDepth)

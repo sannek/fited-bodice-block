@@ -37,12 +37,12 @@ export default {
     "shoulderToShoulder"
   ],
   dependencies: {
-    base: "neckBase",
-    back: "base"
+    neckBase: "base",
+    base: "back"
   },
   inject: {},
-  hide: ["base", "back"],
-  parts: ["neckBase", "base", "back"],
+  hide: ["back", "neckBase"],
+  parts: ["base", "back"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
     waistEase: { pct: 10, min: 5, max: 25 }
