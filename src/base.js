@@ -28,25 +28,27 @@ export default function (part) {
   const RIGHT = 0;
   const LEFT = 180;
 
-  const { chest, hpsToWaistFront, hpsToWaistBack, shoulderSlope } = measurements;
-  const { chestEase } = options;
+  const { chest, waist, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
+  const { chestEase, waistEase } = options;
 
   const frontNeckDepth = store.get("frontNeckDepth");
   const backNeckDepth = store.get("backNeckDepth");
   const neckWidth = store.get("neckWidth");
 
-  const chestEaseFactor = (100 + chestEase) / 100;
+  const chestEaseFactor = 1 + chestEase;
+  const waistEaseFactor = 1 + waistEase;
 
   const hbw = chest / 20;
-  const fullChest = chest * chestEaseFactor;
-  const frontChest = fullChest / 4 + hbw / 2
+  const finalChest = chest * chestEaseFactor;
+  const frontChest = finalChest / 4 + hbw / 2
+  const finalWaist = waist * waistEaseFactor;
 
   points.origin = new Point(0, 0);
 
   // chest line
   points.a = points.origin.shift(DOWN, hpsToWaistFront / 2);
   points.c = points.a.shift(RIGHT, frontChest);
-  points.b = points.a.shift(RIGHT, fullChest / 2);
+  points.b = points.a.shift(RIGHT, finalChest / 2);
   points.cBeam = points.c.shift(UP, BEAM);
 
   // front key points
@@ -74,9 +76,22 @@ export default function (part) {
   points.sbBeam = points.sb.shift(LEFT + shoulderSlope, BEAM);
 
   points.e = points.n.shift(DOWN, hpsToWaistBack - backNeckDepth);
-  points.fb = points.e.shift(LEFT, fullChest / 2 - frontChest - 0.5 * hbw);
+  points.fb = points.e.shift(LEFT, finalChest / 2 - frontChest - 0.5 * hbw);
   points.s0b = utils.beamsIntersect(points.c, points.cBeam, points.n1, points.sb);
   points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.sb, points.sbBeam);
+
+  // finalize back shoulder
+  points.t00b = points.n.shift(LEFT, shoulderToShoulder / 2);
+  points.t00bBeam = points.t00b.shift(DOWN, BEAM);
+
+  points.tb = utils.beamsIntersect(points.sb, points.sbBeam, points.t00b, points.t00bBeam);
+
+  // finalize front shoulder
+  const backShoulderWidth = points.tb.dist(points.sb);
+
+  // front shoulder is approx 1cm narrower than back shoulder
+  points.tf = points.sf.shiftTowards(points.t0f, backShoulderWidth - chest * 0.01)
+
 
   // calculate armhole depth - use highest shoulder help point
   if (points.t0b.y < points.t0f.y) {
@@ -85,9 +100,7 @@ export default function (part) {
     points.x0 = points.t0f.shift(DOWN, (hpsToWaistBack - backNeckDepth) / 3);
   }
 
-  points.x = points.x0.shift(DOWN, hbw * 1.5); // maybe adjust for ease later?
-
-  console.log(points.x.dist(points.fb))
+  points.x = points.x0.shift(DOWN, hbw * 1.5 * chestEaseFactor);
 
   paths.chestLine = new Path()
     .move(points.a)
@@ -95,7 +108,7 @@ export default function (part) {
     .line(points.b)
 
   paths.frontBase = new Path()
-    .move(points.t0f)
+    .move(points.tf)
     .line(points.sf)
     .line(points.m)
     .line(points.d)
@@ -103,7 +116,7 @@ export default function (part) {
     .line(points.x)
 
   paths.backBase = new Path()
-    .move(points.t0b)
+    .move(points.tb)
     .line(points.sb)
     .line(points.n1)
     .line(points.e)
