@@ -1,10 +1,10 @@
 {
-  "name": "danckaerts-bodice",
+  "name": "fitted-bodice",
   "version": "0.0.1",
-  "description": "Danckaerts bodice block",
+  "description": "Fitted bodice block",
   "author": "sannek",
   "license": "MIT",
-  "repository": "sannek/danckaerts-bodice",
+  "repository": "sannek/fitted-bodice-block",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
