@@ -115,7 +115,7 @@ export default function (part) {
     points.x0 = points.t0f.shift(DOWN, (hpsToWaistBack - backNeckDepth) / 3);
   }
 
-  points.underArmSide = points.x0.shift(DOWN, HBW * 1.25 * chestEaseFactor);
+  points.underArmSide = points.x0.shift(DOWN, HBW * 1.5 * chestEaseFactor);
 
   store.set("sideSeamLength", points.sideBackWaist.dist(points.underArmSide));
 

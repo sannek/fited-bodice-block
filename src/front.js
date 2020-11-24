@@ -19,7 +19,7 @@ export default function (part) {
   } = part.shorthand()
 
 
-  const { chest, shoulderSlope, bustSpan, hpsToBust, highBust } = measurements;
+  const { chest, shoulderSlope, bustSpan, hpsToBust, highBust, waist } = measurements;
   const { chestEase } = options;
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
@@ -33,7 +33,7 @@ export default function (part) {
 
   // Armhole curve control points
   const sideSeamAngle = 90 - points.sideFrontWaist.angle(points.underArmSide);
-  points.uCp = points.underArmSide.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor);
+  points.uCp = points.underArmSide.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor * chestEaseFactor);
 
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
@@ -60,7 +60,7 @@ export default function (part) {
 
   const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
-  points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, HBW * 1.3);
+  points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, HBW * 1.3 * chestEaseFactor * chestEaseFactor);
 
   // Side dart
   // TO DO: tweak dart legs to close with proper angles
@@ -72,10 +72,27 @@ export default function (part) {
   const sideIntersect = utils.circlesIntersect(points.f1, sideDartSize, points.v, points.v.dist(points.f1), "y");
   points.f2 = sideIntersect[1];
 
+
+  // Waist dart
+  const finalFrontWaist = store.get("finalFrontWaist");
+  const frontDartSize = points.centerFrontWaist.dist(points.sideFrontWaist) - finalFrontWaist;
+
+  console.log({ waist, finalFrontWaist, frontDartSize })
+
+  points.vDownBeam = points.v.shift(DOWN - frontAngle, BEAM);
+  points.dCenter = utils.beamsIntersect(points.centerFrontWaist, points.sideFrontWaist, points.v, points.vDownBeam);
+  points.d1 = points.dCenter.shiftTowards(points.centerFrontWaist, frontDartSize / 2);
+  points.d2 = points.dCenter.shiftTowards(points.sideFrontWaist, frontDartSize / 2);
+
+
+
   paths.frontBase = new Path()
     .move(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .line(points.centerFrontWaist)
+    .line(points.d1)
+    .line(points.v)
+    .line(points.d2)
     .line(points.sideFrontWaist)
     .line(points.f2)
     .line(points.v)
