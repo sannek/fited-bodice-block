@@ -8,7 +8,7 @@ WIP - basic bodice for FreeSewing. Maybe for future full patterns?
 - true up dart legs for side and waist darts
 - rotate / shorten darts for actually sewable block
 
-## Fitting improvements?
+## Fitting improvements
 
 - handle very large or very small full bust / overbust differences.
 - allow more fine-tuning of things like armhole depth / back width etc

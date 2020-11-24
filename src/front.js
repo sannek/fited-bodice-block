@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT, BEAM } from './constants';
+import { LEFT, DOWN, RIGHT, BEAM, CM_FACTOR } from './constants';
 
 export default function (part) {
   let {
@@ -23,7 +23,7 @@ export default function (part) {
   const { chestEase } = options;
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
-  const CM = chest * 0.011;
+  const CM = chest * CM_FACTOR;
 
   const frontAngle = store.get("frontAngle")
 
