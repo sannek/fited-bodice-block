@@ -43,10 +43,11 @@ export default {
     back: "base"
   },
   inject: {
-    back: "base"
+    back: "base",
+    front: "base"
   },
   hide: ["neckBase", "base"],
-  parts: ["back"],
+  parts: ["back", "front"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
     waistEase: { pct: 10, min: 5, max: 25 }
