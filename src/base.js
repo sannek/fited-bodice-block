@@ -105,7 +105,7 @@ export default function (part) {
   points.t0f = utils.beamsIntersect(points.c, points.cBeam, points.hpsFront, points.sfBeam);
 
   // front shoulder is approx 1cm narrower than back shoulder
-  points.shoulderFront = points.hpsFront.shiftTowards(points.t0f, backShoulderWidth - chest * 0.01)
+  points.shoulderFront = points.hpsFront.shiftTowards(points.t0f, backShoulderWidth - chest * 0.012)
 
 
   // calculate armhole depth - use highest shoulder help point
