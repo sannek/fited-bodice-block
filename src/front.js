@@ -18,19 +18,49 @@ export default function (part) {
     utils
   } = part.shorthand()
 
-  const { chest, shoulderSlope } = measurements;
+
+  const { chest, shoulderSlope, bustSpan, hpsToBust, highBust } = measurements;
   const { chestEase } = options;
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
+  const CM = chest * 0.011;
 
   const frontAngle = store.get("frontAngle")
 
+  // Neckline curve control points
   points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW * 0.8);
   points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.4)
 
+  // Armhole curve control points
   const sideSeamAngle = 90 - points.sideFrontWaist.angle(points.underArmSide);
   points.uCp = points.underArmSide.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor);
-  points.tCp = points.shoulderFront.shift(DOWN - shoulderSlope, HBW * 1.2);
+
+  // front shoulder dart points
+  const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
+
+  points.v1 = points.a.shift(RIGHT, bustSpan / 2);
+  points.v = points.hpsFront.shiftTowards(points.v1, hpsToBust);
+  points.u = points.hpsFront.shiftTowards(points.shoulderFront, frontShoulderWidth / 2)
+
+  let shoulderDartSize = (chest - highBust) / 2;
+  if (chest * chestEase < 6 * CM) {
+    shoulderDartSize += 4 * CM;
+  } else if (chest * chestEase < 10 * CM) {
+    shoulderDartSize += 2 * CM;
+  }
+
+  if (shoulderDartSize > 0) {
+    const intersections = utils.beamIntersectsCircle(points.u, shoulderDartSize, points.hpsFront, points.shoulderFront);
+    points.u1a = intersections[1]; // lowest and rightmost intersection
+  } else {
+    points.u1a = points.hpsFront.shiftTowards(points.shoulderFront, frontShoulderWidth / 2)
+  }
+
+  points.u1 = points.v.shiftTowards(points.u1a, points.v.dist(points.u));
+
+  const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
+  points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
+  points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, HBW * 1.3);
 
   paths.frontBase = new Path()
     .move(points.hpsFront)
@@ -38,8 +68,11 @@ export default function (part) {
     .line(points.centerFrontWaist)
     .line(points.sideFrontWaist)
     .line(points.underArmSide)
-    .curve(points.uCp, points.tCp, points.shoulderFront)
-    .close()
+    .curve(points.uCp, points.tCp, points.t)
+    .line(points.u1)
+    .line(points.v)
+    .line(points.u)
+    .line(points.hpsFront)
 
   // Complete?
   if (complete) {
