@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT } from './constants';
+import { LEFT, DOWN, RIGHT, BEAM } from './constants';
 
 export default function (part) {
   let {
@@ -50,8 +50,8 @@ export default function (part) {
   }
 
   if (shoulderDartSize > 0) {
-    const intersections = utils.beamIntersectsCircle(points.u, shoulderDartSize, points.hpsFront, points.shoulderFront);
-    points.u1a = intersections[1]; // lowest and rightmost intersection
+    const shoulderIntersect = utils.beamIntersectsCircle(points.u, shoulderDartSize, points.hpsFront, points.shoulderFront);
+    points.u1a = shoulderIntersect[1]; // lowest and rightmost intersection
   } else {
     points.u1a = points.hpsFront.shiftTowards(points.shoulderFront, frontShoulderWidth / 2)
   }
@@ -62,11 +62,24 @@ export default function (part) {
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
   points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, HBW * 1.3);
 
+  // Side dart
+  // TO DO: tweak dart legs to close with proper angles
+  const backSideSeamLength = store.get("sideSeamLength");
+  const sideDartSize = points.sideFrontWaist.dist(points.underArmSide) - backSideSeamLength;
+  points.f10 = points.v.shift(RIGHT - frontAngle, BEAM)
+  points.f1 = utils.beamsIntersect(points.v, points.f10, points.underArmSide, points.sideFrontWaist);
+
+  const sideIntersect = utils.circlesIntersect(points.f1, sideDartSize, points.v, points.v.dist(points.f1), "y");
+  points.f2 = sideIntersect[1];
+
   paths.frontBase = new Path()
     .move(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .line(points.centerFrontWaist)
     .line(points.sideFrontWaist)
+    .line(points.f2)
+    .line(points.v)
+    .line(points.f1)
     .line(points.underArmSide)
     .curve(points.uCp, points.tCp, points.t)
     .line(points.u1)
