@@ -1,5 +1,5 @@
 [build]
-  base = "packages/fitted-bodice-block/example"
+  base = "example"
   publish = "build"
   command = "npm run build"
 
