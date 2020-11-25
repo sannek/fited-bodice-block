@@ -1,4 +1,4 @@
-import { RIGHT, LEFT, UP, DOWN } from './constants';
+import { RIGHT, LEFT, UP, DOWN, CM_FACTOR } from './constants';
 
 export default function (part) {
   let {
@@ -20,7 +20,7 @@ export default function (part) {
 
   const BEAM = 100 // only used for making beams for easy reading
 
-  const { chest, waist, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
+  const { chest, waist, highBust, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
   const { chestEase, waistEase } = options;
 
   const frontNeckDepth = store.get("frontNeckDepth");
@@ -30,6 +30,7 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const waistEaseFactor = 1 + waistEase;
 
+  const CM = chest * CM_FACTOR;
   const HBW = chest / 20;
 
   // set up measurements already for half pattern
@@ -72,7 +73,7 @@ export default function (part) {
   points.t0b = utils.beamsIntersect(points.c, points.cBeam, points.hpsBack, points.sbBeam);
 
   // finalize back shoulder
-  points.t00b = points.centerBackNeck.shift(LEFT, shoulderToShoulder / 2 - chest * 0.01);
+  points.t00b = points.centerBackNeck.shift(LEFT, shoulderToShoulder / 2 - CM);
   points.t00bBeam = points.t00b.shift(DOWN, BEAM);
 
   points.shoulderBack = utils.beamsIntersect(points.hpsBack, points.sbBeam, points.t00b, points.t00bBeam);
@@ -84,13 +85,24 @@ export default function (part) {
   const frontWaistDiff = finalFrontChest - finalFrontWaist;
   let frontWaist;
 
+  const cupSize = (chest - highBust)
+  const largeCup = cupSize > 7 * CM;
+  store.set("largeCup", largeCup);
+  let centerFrontSlant;
+  if (largeCup) {
+    centerFrontSlant = HBW - 2 * CM;
+  } else {
+    centerFrontSlant = Math.min(3 * CM, HBW - 2 * CM);
+  }
+
+
   if (frontWaistDiff <= HBW * 0.8) {
     frontWaist = finalFrontWaist;
   } else {
     frontWaist = finalFrontChest - frontWaistDiff / 2
   }
   points.m1 = points.a.shift(UP, (hpsToWaistFront - frontNeckDepth) / 2);
-  points.centerFrontNeck = points.m1.shift(RIGHT, HBW / 2);
+  points.centerFrontNeck = points.m1.shift(RIGHT, centerFrontSlant);
 
   const frontAngle = 90 - points.a.angle(points.centerFrontNeck);
   store.set("frontAngle", frontAngle);
@@ -105,7 +117,7 @@ export default function (part) {
   points.t0f = utils.beamsIntersect(points.c, points.cBeam, points.hpsFront, points.sfBeam);
 
   // front shoulder is approx 1cm narrower than back shoulder
-  points.shoulderFront = points.hpsFront.shiftTowards(points.t0f, backShoulderWidth - chest * 0.012)
+  points.shoulderFront = points.hpsFront.shiftTowards(points.t0f, backShoulderWidth - CM)
 
 
   // calculate armhole depth - use highest shoulder help point
@@ -115,7 +127,7 @@ export default function (part) {
     points.x0 = points.t0f.shift(DOWN, (hpsToWaistBack - backNeckDepth) / 3);
   }
 
-  points.underArmSide = points.x0.shift(DOWN, HBW * 1.5 * chestEaseFactor);
+  points.underArmSide = points.x0.shift(DOWN, HBW + 2 * CM * chestEaseFactor);
 
   store.set("sideSeamLength", points.sideBackWaist.dist(points.underArmSide));
 

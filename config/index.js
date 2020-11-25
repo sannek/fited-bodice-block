@@ -3,7 +3,7 @@ import { version } from "../package.json";
 // ?? 🤔 ?? --> https://en.freesewing.dev/packages/core/config
 
 export default {
-  name: "danckaerts-bodice",
+  name: "fitted-bodice",
   version,
   design: "sannek",
   code: "sannek",
@@ -28,7 +28,6 @@ export default {
     "neck",
     "bustSpan",
     "chest",
-    "bustFront",
     "highBust",
     "hpsToBust",
     "hpsToWaistBack",

@@ -31,9 +31,15 @@ export default function (part) {
   points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW * 0.8);
   points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.4)
 
-  // Armhole curve control points
+  // Armhole curve control points and adjustment
   const sideSeamAngle = 90 - points.sideFrontWaist.angle(points.underArmSide);
-  points.uCp = points.underArmSide.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor * chestEaseFactor);
+  const lowerFrontUnderArm = store.get("largeCup") ? 1 * CM : 1.5 * CM;
+
+  console.log(store.get("largeCup"))
+  console.log({ highBust, chest, lowerFrontUnderArm })
+
+  points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
+  points.uCp = points.frontUnderArm.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor * chestEaseFactor);
 
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
@@ -65,9 +71,9 @@ export default function (part) {
   // Side dart
   // TO DO: tweak dart legs to close with proper angles
   const backSideSeamLength = store.get("sideSeamLength");
-  const sideDartSize = points.sideFrontWaist.dist(points.underArmSide) - backSideSeamLength;
+  const sideDartSize = points.sideFrontWaist.dist(points.frontUnderArm) - backSideSeamLength;
   points.f10 = points.v.shift(RIGHT - frontAngle, BEAM)
-  points.f1 = utils.beamsIntersect(points.v, points.f10, points.underArmSide, points.sideFrontWaist);
+  points.f1 = utils.beamsIntersect(points.v, points.f10, points.frontUnderArm, points.sideFrontWaist);
 
   const sideIntersect = utils.circlesIntersect(points.f1, sideDartSize, points.v, points.v.dist(points.f1), "y");
   points.f2 = sideIntersect[1];
@@ -77,7 +83,7 @@ export default function (part) {
   const finalFrontWaist = store.get("finalFrontWaist");
   const frontDartSize = points.centerFrontWaist.dist(points.sideFrontWaist) - finalFrontWaist;
 
-  console.log({ waist, finalFrontWaist, frontDartSize })
+  // console.log({ waist, finalFrontWaist, frontDartSize })
 
   points.vDownBeam = points.v.shift(DOWN - frontAngle, BEAM);
   points.dCenter = utils.beamsIntersect(points.centerFrontWaist, points.sideFrontWaist, points.v, points.vDownBeam);
@@ -97,7 +103,7 @@ export default function (part) {
     .line(points.f2)
     .line(points.v)
     .line(points.f1)
-    .line(points.underArmSide)
+    .line(points.frontUnderArm)
     .curve(points.uCp, points.tCp, points.t)
     .line(points.u1)
     .line(points.v)
