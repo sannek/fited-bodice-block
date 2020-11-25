@@ -25,21 +25,20 @@ export default function (part) {
   const HBW = chest / 20;
   const CM = chest * CM_FACTOR;
 
-  const frontAngle = store.get("frontAngle")
-
+  const frontAngle = store.get("frontAngle");
+  const veryLargeCup = store.get("veryLargeCup")
+  const largeCup = store.get("largeCup");
   // Neckline curve control points
   points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW * 0.8);
   points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.4)
 
   // Armhole curve control points and adjustment
   const sideSeamAngle = 90 - points.sideFrontWaist.angle(points.underArmSide);
-  const lowerFrontUnderArm = store.get("largeCup") ? 1 * CM : 1.5 * CM;
-
-  console.log(store.get("largeCup"))
-  console.log({ highBust, chest, lowerFrontUnderArm })
+  const lowerFrontUnderArm = veryLargeCup ? 3 * CM : 2 * CM;
 
   points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  points.uCp = points.frontUnderArm.shift(LEFT - sideSeamAngle, HBW * 1.8 * chestEaseFactor * chestEaseFactor);
+  const underArmCP = (veryLargeCup ? 3 : 5) * CM * chestEaseFactor * chestEaseFactor;
+  points.uCp = points.frontUnderArm.shift(LEFT, underArmCP);
 
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
@@ -49,10 +48,12 @@ export default function (part) {
   points.u = points.hpsFront.shiftTowards(points.shoulderFront, frontShoulderWidth / 2)
 
   let shoulderDartSize = (chest - highBust) / 2;
-  if (chest * chestEase < 6 * CM) {
-    shoulderDartSize += 4 * CM;
-  } else if (chest * chestEase < 10 * CM) {
-    shoulderDartSize += 2 * CM;
+  if (!veryLargeCup) {
+    if (chest * chestEase < 6 * CM) {
+      shoulderDartSize += 4 * CM;
+    } else if (chest * chestEase < 10 * CM) {
+      shoulderDartSize += 2 * CM;
+    }
   }
 
   if (shoulderDartSize > 0) {
@@ -65,8 +66,9 @@ export default function (part) {
   points.u1 = points.v.shiftTowards(points.u1a, points.v.dist(points.u));
 
   const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
+  const shoulderCP = 4 * CM * chestEaseFactor * chestEaseFactor;
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
-  points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, HBW * 1.3 * chestEaseFactor * chestEaseFactor);
+  points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, shoulderCP);
 
   // Side dart
   // TO DO: tweak dart legs to close with proper angles

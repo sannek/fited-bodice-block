@@ -33,9 +33,16 @@ export default function (part) {
   const CM = chest * CM_FACTOR;
   const HBW = chest / 20;
 
+  const cupSize = (chest - highBust)
+  const largeCup = cupSize > 7 * CM;
+  const veryLargeCup = cupSize > 15 * CM;
+  store.set("largeCup", largeCup);
+  store.set("veryLargeCup", veryLargeCup);
+
   // set up measurements already for half pattern
   const finalChest = 0.5 * chest * chestEaseFactor;
-  const finalFrontChest = 0.5 * finalChest + 0.5 * HBW;
+  let finalFrontChest = 0.5 * finalChest + 2 * CM;
+  finalFrontChest += veryLargeCup ? + 2 * CM : 0;
   const finalBackChest = finalChest - finalFrontChest;
   const finalWaist = 0.5 * waist * waistEaseFactor;
 
@@ -85,9 +92,6 @@ export default function (part) {
   const frontWaistDiff = finalFrontChest - finalFrontWaist;
   let frontWaist;
 
-  const cupSize = (chest - highBust)
-  const largeCup = cupSize > 7 * CM;
-  store.set("largeCup", largeCup);
   let centerFrontSlant;
   if (largeCup) {
     centerFrontSlant = HBW - 2 * CM;
