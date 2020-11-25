@@ -32,14 +32,6 @@ export default function (part) {
   points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW * 0.8);
   points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.4)
 
-  // Armhole curve control points and adjustment
-  const sideSeamAngle = 90 - points.sideFrontWaist.angle(points.underArmSide);
-  const lowerFrontUnderArm = veryLargeCup ? 3 * CM : 2 * CM;
-
-  points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  const underArmCP = 5 * CM * chestEaseFactor * chestEaseFactor;
-  points.uCp = points.frontUnderArm.shift(LEFT, underArmCP);
-
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
 
@@ -66,20 +58,35 @@ export default function (part) {
   points.u1 = points.v.shiftTowards(points.u1a, points.v.dist(points.u));
 
   const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
-  const shoulderCP = 4 * CM * chestEaseFactor * chestEaseFactor;
+  const shoulderCP = 5 * CM * chestEaseFactor * chestEaseFactor;
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
   points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, shoulderCP);
 
   // Side dart
+  points.f10 = points.v.shift(RIGHT - frontAngle, BEAM)
+  // where top leg of side dart crosses side seam
+  points.f1 = utils.beamsIntersect(points.v, points.f10, points.underArmSide, points.sideFrontWaist);
+
+  /* with a very large bust size the side dart ends up way too large
+  but if the bust point is high there might not be enough space
+  between the underside of the armhole and the top leg of the side dart */
+
+  let lowerFrontUnderArm = veryLargeCup ? 3 * CM : 2 * CM;
+  const sideDartToUnderarm = points.f1.dist(points.underArmSide);
+  if (sideDartToUnderarm - lowerFrontUnderArm <= 3.5 * CM) {
+    lowerFrontUnderArm = Math.max(sideDartToUnderarm - 3.5 * CM, 0)
+  }
+
+  points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
+  const underArmCP = 5 * CM * chestEaseFactor * chestEaseFactor;
+  points.uCp = points.frontUnderArm.shift(LEFT - frontAngle, underArmCP);
+
   // TO DO: tweak dart legs to close with proper angles
   const backSideSeamLength = store.get("sideSeamLength");
   const sideDartSize = points.sideFrontWaist.dist(points.frontUnderArm) - backSideSeamLength;
-  points.f10 = points.v.shift(RIGHT - frontAngle, BEAM)
-  points.f1 = utils.beamsIntersect(points.v, points.f10, points.frontUnderArm, points.sideFrontWaist);
 
   const sideIntersect = utils.circlesIntersect(points.f1, sideDartSize, points.v, points.v.dist(points.f1), "y");
   points.f2 = sideIntersect[1];
-
 
   // Waist dart
   const finalFrontWaist = store.get("finalFrontWaist");
