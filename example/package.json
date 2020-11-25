@@ -1,6 +1,6 @@
 {
-  "name": "danckaerts-bodice",
-  "homepage": "https://danckaerts-bodice.freesewing.dev/",
+  "name": "fitted-bodice",
+  "homepage": "https://bodice-block-sannek.netlify.app",
   "version": "12",
   "private": true,
   "dependencies": {

@@ -27,7 +27,7 @@
   </a>
 </p>
 
-# danckaerts-bodice example
+# fitted-bodice example
 
 This project was bootstrapped with [Create Freesewing Pattern](https://en.freesewing.dev/create-freesewing-pattern):
 
