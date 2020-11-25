@@ -37,7 +37,7 @@ export default function (part) {
   const lowerFrontUnderArm = veryLargeCup ? 3 * CM : 2 * CM;
 
   points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  const underArmCP = (veryLargeCup ? 3 : 5) * CM * chestEaseFactor * chestEaseFactor;
+  const underArmCP = 5 * CM * chestEaseFactor * chestEaseFactor;
   points.uCp = points.frontUnderArm.shift(LEFT, underArmCP);
 
   // front shoulder dart points
