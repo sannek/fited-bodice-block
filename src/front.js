@@ -94,12 +94,23 @@ export default function (part) {
   const armhole = new Path().move(points.closed_frontUnderArm).curve(points.closed_uCp, points.closed_tCp, points.closed_t).length();
   store.set("frontArmhole", armhole);
 
-  // TO DO: tweak dart legs to close with proper angles
   const backSideSeamLength = store.get("sideSeamLength");
   const sideDartSize = points.sideFrontWaist.dist(points.frontUnderArm) - backSideSeamLength;
 
   const sideIntersect = utils.circlesIntersect(points.f1, sideDartSize, points.v, points.v.dist(points.f1), "y");
   points.f2 = sideIntersect[1];
+
+  /* 
+    True up side dart.
+  */
+
+  const sideDartAngle = 360 - points.v.angle(points.f2) + points.v.angle(points.f1);
+  points.underArmSideDartClosed = points.frontUnderArm.rotate(-sideDartAngle, points.v);
+
+  points.f1 =
+    utils.beamsIntersect(points.underArmSideDartClosed, points.sideFrontWaist, points.v, points.f1)
+      .rotate(sideDartAngle, points.v)
+  points.f2 = utils.beamsIntersect(points.underArmSideDartClosed, points.sideFrontWaist, points.v, points.f2)
 
   // Waist dart
   const finalFrontWaist = store.get("finalFrontWaist");

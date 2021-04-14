@@ -22,7 +22,6 @@ export default function (part) {
 
   const { chest, waist, highBust, waistBack, hpsToWaistFront, hpsToWaistBack, shoulderSlope, shoulderToShoulder } = measurements;
   const { chestEase, waistEase } = options;
-
   const frontNeckDepth = store.get("frontNeckDepth");
   const backNeckDepth = store.get("backNeckDepth");
   const neckWidth = store.get("neckWidth");
