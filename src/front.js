@@ -29,8 +29,8 @@ export default function (part) {
   const veryLargeCup = store.get("veryLargeCup")
   const largeCup = store.get("largeCup");
   // Neckline curve control points
-  points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW * 0.8);
-  points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.4)
+  points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW);
+  points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.5)
 
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);

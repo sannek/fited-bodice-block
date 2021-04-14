@@ -37,13 +37,13 @@ export default function (part) {
     neckWidth *= tweak;
 
     points.n = points.origin.shift(DOWN, backNeckDepth);
-    points.nCp = points.n.shift(RIGHT, hbw * 0.4);
+    points.nCp = points.n.shift(RIGHT, hbw * 0.5);
 
     points.m = points.origin.shift(DOWN, frontNeckDepth);
-    points.mCp = points.m.shift(RIGHT, hbw * 0.8);
+    points.mCp = points.m.shift(RIGHT, hbw);
 
     points.s = points.origin.shift(RIGHT, neckWidth);
-    points.sCp = points.s.shift(DOWN - shoulderSlope, hbw * 0.4)
+    points.sCp = points.s.shift(DOWN - shoulderSlope, hbw * 0.5)
 
     paths.neck = new Path()
       .move(points.m)
