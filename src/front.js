@@ -62,6 +62,7 @@ export default function (part) {
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
   points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, shoulderCP);
 
+
   // Side dart
   points.f10 = points.v.shift(RIGHT - frontAngle, BEAM)
   // where top leg of side dart crosses side seam
@@ -81,7 +82,16 @@ export default function (part) {
   const underArmCP = 7 * CM * chestEaseFactor * chestEaseFactor;
   points.uCp = points.frontUnderArm.shift(LEFT - frontAngle, underArmCP);
 
-  const armhole = new Path().move(points.frontUnderArm).curve(points.uCp, points.tCp, points.t).length();
+  // Rotate the shoulder dart closed.
+  const bustPoint = points.v;
+  points.closed_u1 = points.u1.rotate(shoulderDartAngle, bustPoint);
+  points.closed_t = points.t.rotate(shoulderDartAngle, bustPoint);
+  points.closed_frontUnderArm = points.frontUnderArm.rotate(shoulderDartAngle, bustPoint);
+  points.closed_f1 = points.f1.rotate(shoulderDartAngle, bustPoint);
+  points.closed_tCp = points.tCp.rotate(shoulderDartAngle, bustPoint);
+  points.closed_uCp = points.uCp.rotate(shoulderDartAngle, bustPoint);
+
+  const armhole = new Path().move(points.closed_frontUnderArm).curve(points.closed_uCp, points.closed_tCp, points.closed_t).length();
   store.set("frontArmhole", armhole);
 
   // TO DO: tweak dart legs to close with proper angles
@@ -112,11 +122,9 @@ export default function (part) {
     .line(points.sideFrontWaist)
     .line(points.f2)
     .line(points.v)
-    .line(points.f1)
-    .line(points.frontUnderArm)
-    .curve(points.uCp, points.tCp, points.t)
-    .line(points.u1)
-    .line(points.v)
+    .line(points.closed_f1)
+    .line(points.closed_frontUnderArm)
+    .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
     .line(points.u)
     .line(points.hpsFront)
 
