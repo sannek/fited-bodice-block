@@ -112,16 +112,20 @@ export default function (part) {
   points.d1 = points.dCenter.shiftTowards(points.centerFrontWaist, frontDartSize / 2);
   points.d2 = points.dCenter.shiftTowards(points.sideFrontWaist, frontDartSize / 2);
 
+  // Move dart legs slightly away from bust point
+  points.v_side = points.v.shiftTowards(points.f1, 3 * CM)
+  points.v_waist = points.v.shift(DOWN - frontAngle, 3 * CM);
+
   paths.frontBase = new Path()
     .move(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .line(points.centerFrontWaist)
     .line(points.d1)
-    .line(points.v)
+    .line(points.v_waist)
     .line(points.d2)
     .line(points.sideFrontWaist)
     .line(points.f2)
-    .line(points.v)
+    .line(points.v_side)
     .line(points.closed_f1)
     .line(points.closed_frontUnderArm)
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
