@@ -133,40 +133,19 @@ export default function (part) {
   points.closed_t = points.closed_t.rotate(frontAngle, points.a)
   points.u = points.u.rotate(frontAngle, points.a)
 
-  const targetAngle = 180;
-  let delta = 5;
-  // True Waist Dart - binary search to find sweet spot
-  // Initial extreme points
-  points.d1_upper = points.d1.shiftFractionTowards(points.v_waist, 0.5)
-  points.d1_lower = points.d1.shiftFractionTowards(points.v_waist, -0.5)
-  points.d2_upper = points.d2.shiftFractionTowards(points.v_waist, 0.5)
-  points.d2_lower = points.d2.shiftFractionTowards(points.v_waist, -0.5)
 
-  do {
-    points.d1 = points.d1_upper.shiftFractionTowards(points.d1_lower, 0.5)
-    points.d2 = points.d2_upper.shiftFractionTowards(points.d2_lower, 0.5)
+  /*
+    True waist darts
+    - lengthen them by a bit,
+    - calculate control points to curve waistline
+  */
+  points.d1 = points.d1.shiftFractionTowards(points.v_waist, -0.05);
+  let leftDartAngle = points.d1.angle(points.v_waist);
+  points.d1Cp = points.d1.shift(leftDartAngle + 90, 2 * CM);
 
-    let leftDartAngle = points.d1.angle(points.v_waist);
-    let leftWaistAngle = points.d1.angle(points.centerFrontWaist);
-    let leftAngle = leftWaistAngle - leftDartAngle;
-
-    let rightDartAngle = points.d2.angle(points.v_waist);
-    let rightWaistRawAngle = points.sideFrontWaist.angle(points.sideFrontWaist);
-    let rightWaistAngle = rightWaistRawAngle < 180 ? rightWaistRawAngle : rightWaistRawAngle - 360;
-
-    let rightAngle = rightDartAngle - rightWaistAngle;
-    delta = (rightAngle + leftAngle) - targetAngle;
-
-    if (delta > 0) {
-      // dart legs go down
-      points.d1_upper = points.d1.copy()
-      points.d2_upper = points.d2.copy()
-    } else {
-      // dart legs go up
-      points.d1_lower = points.d1.copy()
-      points.d2_lower = points.d2.copy()
-    }
-  } while (Math.abs(delta) > 0.5)
+  points.d2 = points.d2.shiftFractionTowards(points.v_waist, -0.05);
+  let rightDartAngle = points.d2.angle(points.v_waist);
+  points.d2Cp = points.d2.shift(rightDartAngle - 90, 2 * CM);
 
   // ACTUALLY DRAW FRONT BODICE!!
 
@@ -174,10 +153,10 @@ export default function (part) {
     .move(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .line(points.centerFrontWaist)
-    .line(points.d1)
+    ._curve(points.d1Cp, points.d1)
     .line(points.v_waist)
     .line(points.d2)
-    .line(points.sideFrontWaist)
+    .curve_(points.d2Cp, points.sideFrontWaist)
     .line(points.f2)
     .line(points.v_side)
     .line(points.closed_f1)
