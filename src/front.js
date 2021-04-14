@@ -133,6 +133,41 @@ export default function (part) {
   points.closed_t = points.closed_t.rotate(frontAngle, points.a)
   points.u = points.u.rotate(frontAngle, points.a)
 
+  const targetAngle = 180;
+  let delta = 5;
+  // True Waist Dart - binary search to find sweet spot
+  // Initial extreme points
+  points.d1_upper = points.d1.shiftFractionTowards(points.v_waist, 0.5)
+  points.d1_lower = points.d1.shiftFractionTowards(points.v_waist, -0.5)
+  points.d2_upper = points.d2.shiftFractionTowards(points.v_waist, 0.5)
+  points.d2_lower = points.d2.shiftFractionTowards(points.v_waist, -0.5)
+
+  do {
+    points.d1 = points.d1_upper.shiftFractionTowards(points.d1_lower, 0.5)
+    points.d2 = points.d2_upper.shiftFractionTowards(points.d2_lower, 0.5)
+
+    let leftDartAngle = points.d1.angle(points.v_waist);
+    let leftWaistAngle = points.d1.angle(points.centerFrontWaist);
+    let leftAngle = leftWaistAngle - leftDartAngle;
+
+    let rightDartAngle = points.d2.angle(points.v_waist);
+    let rightWaistRawAngle = points.sideFrontWaist.angle(points.sideFrontWaist);
+    let rightWaistAngle = rightWaistRawAngle < 180 ? rightWaistRawAngle : rightWaistRawAngle - 360;
+
+    let rightAngle = rightDartAngle - rightWaistAngle;
+    delta = (rightAngle + leftAngle) - targetAngle;
+
+    if (delta > 0) {
+      // dart legs go down
+      points.d1_upper = points.d1.copy()
+      points.d2_upper = points.d2.copy()
+    } else {
+      // dart legs go up
+      points.d1_lower = points.d1.copy()
+      points.d2_lower = points.d2.copy()
+    }
+  } while (Math.abs(delta) > 0.5)
+
   // ACTUALLY DRAW FRONT BODICE!!
 
   paths.frontBase = new Path()
