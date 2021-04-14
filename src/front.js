@@ -58,7 +58,7 @@ export default function (part) {
   points.u1 = points.v.shiftTowards(points.u1a, points.v.dist(points.u));
 
   const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
-  const shoulderCP = 5 * CM * chestEaseFactor * chestEaseFactor;
+  const shoulderCP = 7 * CM * chestEaseFactor * chestEaseFactor;
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
   points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, shoulderCP);
 
@@ -78,8 +78,11 @@ export default function (part) {
   }
 
   points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  const underArmCP = 5 * CM * chestEaseFactor * chestEaseFactor;
+  const underArmCP = 7 * CM * chestEaseFactor * chestEaseFactor;
   points.uCp = points.frontUnderArm.shift(LEFT - frontAngle, underArmCP);
+
+  const armhole = new Path().move(points.frontUnderArm).curve(points.uCp, points.tCp, points.t).length();
+  store.set("frontArmhole", armhole);
 
   // TO DO: tweak dart legs to close with proper angles
   const backSideSeamLength = store.get("sideSeamLength");
@@ -98,8 +101,6 @@ export default function (part) {
   points.dCenter = utils.beamsIntersect(points.centerFrontWaist, points.sideFrontWaist, points.v, points.vDownBeam);
   points.d1 = points.dCenter.shiftTowards(points.centerFrontWaist, frontDartSize / 2);
   points.d2 = points.dCenter.shiftTowards(points.sideFrontWaist, frontDartSize / 2);
-
-
 
   paths.frontBase = new Path()
     .move(points.hpsFront)

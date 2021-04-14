@@ -30,7 +30,7 @@ export default function (part) {
 
   const sideSeamAngle = 90 - points.sideBackWaist.angle(points.underArmSide);
 
-  points.uCp = points.underArmSide.shift(RIGHT - sideSeamAngle, HBW * 1.2 * chestEaseFactor);
+  points.uCp = points.underArmSide.shift(RIGHT - sideSeamAngle, HBW * 1.5 * chestEaseFactor);
   points.tCp = points.shoulderBack.shift(DOWN + shoulderSlope, HBW * 1.2);
 
   // Back waist dart
@@ -49,6 +49,9 @@ export default function (part) {
   points.q1 = points.qCenter.shift(UP, 0.65 * CM)
   points.q2 = points.qCenter.shift(DOWN, 0.65 * CM)
 
+  const lowerArmhole = new Path().move(points.underArmSide).curve_(points.uCp, points.q2).length();
+  const armhole = lowerArmhole + new Path().move(points.q1)._curve(points.tCp, points.shoulderBack).length();
+  store.set("backArmhole", armhole);
 
   paths.backBase = new Path()
     .move(points.hpsBack)
