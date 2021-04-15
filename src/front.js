@@ -107,10 +107,12 @@ export default function (part) {
   const sideDartAngle = 360 - points.v.angle(points.f2) + points.v.angle(points.f1);
   points.underArmSideDartClosed = points.frontUnderArm.rotate(-sideDartAngle, points.v);
 
-  points.f1 =
-    utils.beamsIntersect(points.underArmSideDartClosed, points.sideFrontWaist, points.v, points.f1)
+  points.sideDartSeamIntersect = utils.beamsIntersect(points.underArmSideDartClosed, points.sideFrontWaist, points.v, points.f2)
+  points.closed_f1 =
+    points.sideDartSeamIntersect
       .rotate(sideDartAngle, points.v)
-  points.f2 = utils.beamsIntersect(points.underArmSideDartClosed, points.sideFrontWaist, points.v, points.f2)
+      .rotate(shoulderDartAngle, bustPoint);
+  points.f2 = points.sideDartSeamIntersect.copy()
 
   // Waist dart
   const finalFrontWaist = store.get("finalFrontWaist");
@@ -132,6 +134,7 @@ export default function (part) {
   points.centerFrontNeck = points.centerFrontNeck.rotate(frontAngle, points.a)
   points.centerFrontWaist = points.centerFrontWaist.rotate(frontAngle, points.a)
   points.d1 = points.d1.rotate(frontAngle, points.a)
+  points.v = points.v.rotate(frontAngle, points.a)
   points.v_waist = points.v_waist.rotate(frontAngle, points.a)
   points.d2 = points.d2.rotate(frontAngle, points.a)
   points.sideFrontWaist = points.sideFrontWaist.rotate(frontAngle, points.a)
@@ -175,6 +178,8 @@ export default function (part) {
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
     .line(points.u)
     .line(points.hpsFront)
+
+  snippets.bustPoint = new Snippet('bnotch', points.v);
 
   // Complete?
   if (complete) {
