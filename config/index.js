@@ -9,7 +9,7 @@ export default {
   code: "sannek",
   department: "womenswear",
   type: "block",
-  difficulty: 3,
+  difficulty: 2,
   tags: [
     "freesewing",
     "design",
