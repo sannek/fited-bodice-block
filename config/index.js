@@ -39,14 +39,14 @@ export default {
   ],
   dependencies: {
     base: "neckBase",
-    back: "base"
+    back: "base",
   },
   inject: {
     back: "base",
     front: "base"
   },
   hide: ["neckBase", "base"],
-  parts: ["back", "front"],
+  parts: ["back", "front", "sleeve"],
   options: {
     chestEase: { pct: 10, min: 5, max: 25 },
     waistEase: { pct: 10, min: 5, max: 25 }
