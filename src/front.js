@@ -139,6 +139,7 @@ export default function (part) {
   points.d2 = points.d2.rotate(frontAngle, points.a)
   points.sideFrontWaist = points.sideFrontWaist.rotate(frontAngle, points.a)
   points.f2 = points.f2.rotate(frontAngle, points.a)
+  points.dCenter = points.dCenter.rotate(frontAngle, points.a)
   points.v_side = points.v_side.rotate(frontAngle, points.a)
   points.closed_f1 = points.closed_f1.rotate(frontAngle, points.a)
   points.closed_frontUnderArm = points.closed_frontUnderArm.rotate(frontAngle, points.a)
@@ -161,7 +162,11 @@ export default function (part) {
   let rightDartAngle = points.d2.angle(points.v_waist);
   points.d2Cp = points.d2.shift(rightDartAngle - 90, 2 * CM);
 
-  points.waistDartCenter = utils.beamsIntersect(points.d1Cp, points.d1, points.d2, points.d2Cp)
+  if (points.d1.dist(points.d2) > 1 * CM) {
+    points.waistDartCenter = utils.beamsIntersect(points.d1Cp, points.d1, points.d2, points.d2Cp)
+  } else {
+    points.waistDartCenter = points.dCenter.copy()
+  }
 
   /*
     The side dart will get pressed down, so we need to find how much extra fabric
