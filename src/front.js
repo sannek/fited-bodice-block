@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT, BEAM, CM_FACTOR } from './constants';
+import { UP, LEFT, DOWN, RIGHT, BEAM, CM_FACTOR } from './constants';
 
 export default function (part) {
   let {
@@ -228,7 +228,14 @@ export default function (part) {
       from: points.centerFrontNeck,
       to: points.centerFrontWaist,
       grainline: true
-    })
+    });
+
+    points.titleAnchor = points.v.shift(UP, 5 * CM);
+    macro('title', {
+      at: points.titleAnchor,
+      nr: 1,
+      title: 'front'
+    });
 
     if (sa) {
       paths.sa = paths.saBase.offset(sa).attr('class', 'fabric sa')

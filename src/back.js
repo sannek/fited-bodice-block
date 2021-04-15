@@ -77,6 +77,13 @@ export default function (part) {
       grainline: true
     })
 
+    points.titleAnchor = points.eTip.shift(UP, 5 * CM);
+    macro('title', {
+      at: points.titleAnchor,
+      nr: 2,
+      title: 'back'
+    });
+
     if (sa) {
       paths.sa = paths.backBase.offset(sa).attr('class', 'fabric sa')
     }

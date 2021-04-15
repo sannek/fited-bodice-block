@@ -83,6 +83,14 @@ export default function (part) {
             to: points.p
         })
 
+        points.titleAnchor = points.jCp.shift(-45, 5 * CM);
+        macro('title', {
+            at: points.titleAnchor,
+            nr: 3,
+            title: 'Sleeve'
+        });
+
+
         if (sa) {
             paths.sa = paths.sleeve.offset(sa).attr('class', 'fabric sa')
         }
