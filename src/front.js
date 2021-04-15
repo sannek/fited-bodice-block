@@ -161,6 +161,15 @@ export default function (part) {
   let rightDartAngle = points.d2.angle(points.v_waist);
   points.d2Cp = points.d2.shift(rightDartAngle - 90, 2 * CM);
 
+  /*
+    The side dart will get pressed down, so we need to find how much extra fabric
+    we need to cut to make the dart line up with the sideseam.
+  */
+  const angle = points.f2.angle(points.sideFrontWaist) - points.f2.angle(points.v_side)
+  points.flippedSideWaist = points.sideFrontWaist.rotate(-2 * angle, points.f2)
+  points.sideDartCenter = points.closed_f1.shiftFractionTowards(points.f2, 0.5)
+  points.sideDartCenter = utils.beamsIntersect(points.f2, points.flippedSideWaist, points.v_side, points.sideDartCenter)
+
   // ACTUALLY DRAW FRONT BODICE!!
 
   paths.frontBase = new Path()
@@ -178,6 +187,8 @@ export default function (part) {
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
     .line(points.u)
     .line(points.hpsFront)
+
+  paths.sideDart = new Path().move(points.f2).line(points.sideDartCenter).line(points.closed_f1)
 
   snippets.bustPoint = new Snippet('bnotch', points.v);
 
