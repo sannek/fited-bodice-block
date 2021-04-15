@@ -43,7 +43,7 @@ export default function (part) {
 
   // Armhole dart
   points.s2 = points.hpsBack.shiftFractionTowards(points.shoulderBack, 0.33)
-  points.s5 = points.s2.shift(DOWN, 9 * CM);
+  points.s5 = points.s2.shift(DOWN, 11 * CM);
   points.qCenter = utils.curveIntersectsY(points.underArmSide, points.uCp, points.tCp, points.shoulderBack, points.s5.y);
 
   points.q1 = points.qCenter.shift(UP, 0.65 * CM)
