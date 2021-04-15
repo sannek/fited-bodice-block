@@ -183,7 +183,14 @@ export default function (part) {
 
   // Complete?
   if (complete) {
+    macro('cutonfold', {
+      from: points.centerFrontNeck,
+      to: points.centerFrontWaist,
+      grainline: true
+    })
+
     if (sa) {
+      paths.sa = paths.frontBase.offset(sa).attr('class', 'fabric sa')
     }
   }
 

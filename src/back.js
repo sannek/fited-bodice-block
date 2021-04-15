@@ -55,22 +55,30 @@ export default function (part) {
 
   paths.backBase = new Path()
     .move(points.hpsBack)
-    .curve(points.sCp, points.nCp, points.centerBackNeck)
-    .line(points.centerBackWaist)
-    .line(points.e1)
-    .line(points.eTip)
-    .line(points.e2)
-    .line(points.sideBackWaist)
-    .line(points.underArmSide)
-    .curve_(points.uCp, points.q2)
+    .line(points.shoulderBack)
+    ._curve(points.tCp, points.q1)
     .line(points.s5)
-    .line(points.q1)
-    ._curve(points.tCp, points.shoulderBack)
-    .close()
+    .line(points.q2)
+    ._curve(points.uCp, points.underArmSide)
+    .line(points.sideBackWaist)
+    .line(points.e2)
+    .line(points.eTip)
+    .line(points.e1)
+    .line(points.centerBackWaist)
+    .line(points.centerBackNeck)
+    .curve(points.nCp, points.sCp, points.hpsBack)
 
   // Complete?
   if (complete) {
+
+    macro('grainline', {
+      from: points.centerBackNeck.shift(DOWN, 1 * CM).shift(LEFT, 1 * CM),
+      to: points.centerBackWaist.shift(UP, 1 * CM).shift(LEFT, 1 * CM),
+      grainline: true
+    })
+
     if (sa) {
+      paths.sa = paths.backBase.offset(sa).attr('class', 'fabric sa')
     }
   }
 

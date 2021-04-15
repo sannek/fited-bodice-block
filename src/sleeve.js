@@ -78,7 +78,13 @@ export default function (part) {
 
     // Complete?
     if (complete) {
+        macro('grainline', {
+            from: points.k,
+            to: points.p
+        })
+
         if (sa) {
+            paths.sa = paths.sleeve.offset(sa).attr('class', 'fabric sa')
         }
     }
 
