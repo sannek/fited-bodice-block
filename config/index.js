@@ -35,7 +35,10 @@ export default {
     "shoulderSlope",
     "waist",
     "waistBack",
-    "shoulderToShoulder"
+    "shoulderToShoulder",
+    "shoulderToElbow",
+    "shoulderToWrist",
+    "wrist"
   ],
   dependencies: {
     base: "neckBase",

@@ -7,7 +7,8 @@ WIP - basic bodice block
 
 - [ ] account for darts in seam allowance path
 - [ ] move shoulders forward?
-- [ ] add sleeve & armohole notches
+- [ ] add sleeve & armhole notches
+- [ ] account for biceps circumference
 - [ ] sew up a sample for me
 
 ## Done 🎉

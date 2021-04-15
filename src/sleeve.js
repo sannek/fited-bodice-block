@@ -18,7 +18,7 @@ export default function (part) {
         utils
     } = part.shorthand()
 
-    const { chest, shoulderToElbow, shoulderToWrist, wrist } = measurements;
+    const { shoulderToElbow, shoulderToWrist, wrist } = measurements;
     const backArmhole = store.get("backArmhole");
     const frontArmhole = store.get("frontArmhole");
     const CM = 0.022 * (frontArmhole + backArmhole);
