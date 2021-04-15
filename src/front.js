@@ -161,6 +161,8 @@ export default function (part) {
   let rightDartAngle = points.d2.angle(points.v_waist);
   points.d2Cp = points.d2.shift(rightDartAngle - 90, 2 * CM);
 
+  points.waistDartCenter = utils.beamsIntersect(points.d1Cp, points.d1, points.d2, points.d2Cp)
+
   /*
     The side dart will get pressed down, so we need to find how much extra fabric
     we need to cut to make the dart line up with the sideseam.
@@ -172,7 +174,23 @@ export default function (part) {
 
   // ACTUALLY DRAW FRONT BODICE!!
 
-  paths.frontBase = new Path()
+  paths.saBase = new Path()
+    .move(points.centerFrontWaist)
+    ._curve(points.d1Cp, points.d1)
+    .line(points.waistDartCenter)
+    .line(points.d2)
+    .curve_(points.d2Cp, points.sideFrontWaist)
+    .line(points.f2)
+    .line(points.sideDartCenter)
+    .line(points.closed_f1)
+    .line(points.closed_frontUnderArm)
+    .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
+    .line(points.u)
+    .line(points.hpsFront)
+    .curve(points.sCp, points.mCp, points.centerFrontNeck)
+    .setRender(false)
+
+  paths.seamLines = new Path()
     .move(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .line(points.centerFrontWaist)
@@ -187,8 +205,20 @@ export default function (part) {
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
     .line(points.u)
     .line(points.hpsFront)
+    .close()
+    .attr('class', 'fabric')
 
-  paths.sideDart = new Path().move(points.f2).line(points.sideDartCenter).line(points.closed_f1)
+  paths.sideDartEdge = new Path()
+    .move(points.f2)
+    .line(points.sideDartCenter)
+    .line(points.closed_f1)
+    .attr('class', 'help')
+
+  paths.waistDartEdge = new Path()
+    .move(points.d1)
+    .line(points.waistDartCenter)
+    .line(points.d2)
+    .attr('class', 'help')
 
   snippets.bustPoint = new Snippet('bnotch', points.v);
 
@@ -201,7 +231,7 @@ export default function (part) {
     })
 
     if (sa) {
-      paths.sa = paths.frontBase.offset(sa).attr('class', 'fabric sa')
+      paths.sa = paths.saBase.offset(sa).attr('class', 'fabric sa')
     }
   }
 
