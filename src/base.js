@@ -29,7 +29,9 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const waistEaseFactor = 1 + waistEase;
 
-  const CM = chest * CM_FACTOR;
+  const CM = highBust * CM_FACTOR;
+  store.set("CM", CM);
+
   const HBW = chest / 20;
 
   const cupSize = (chest - highBust)

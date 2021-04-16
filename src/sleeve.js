@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT, UP, CM_FACTOR } from './constants';
+import { LEFT, DOWN, RIGHT, UP } from './constants';
 
 export default function (part) {
     let {

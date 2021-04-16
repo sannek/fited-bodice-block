@@ -23,7 +23,7 @@ export default function (part) {
   const { chestEase } = options;
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
-  const CM = chest * CM_FACTOR;
+  const CM = store.get("CM");
 
   const frontAngle = store.get("frontAngle");
   const veryLargeCup = store.get("veryLargeCup")

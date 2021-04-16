@@ -23,7 +23,7 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const finalWaist = waist * (1 + waistEase);
 
-  const CM = chest * CM_FACTOR;
+  const CM = store.get("CM");
   const HBW = chest / 20;
   points.nCp = points.centerBackNeck.shift(LEFT, HBW * 0.4);
   points.sCp = points.hpsBack.shift(DOWN + shoulderSlope, HBW * 0.4);
