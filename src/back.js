@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT, UP, CM_FACTOR } from './constants';
+import { LEFT, DOWN, RIGHT, UP, sleeveNotchPercentage } from './constants';
 
 export default function (part) {
   let {
@@ -70,8 +70,12 @@ export default function (part) {
   points.q1 = points.qCenter.shift(UP, 0.65 * CM)
   points.q2 = points.qCenter.shift(DOWN, 0.65 * CM)
 
-  const lowerArmhole = new Path().move(points.underArmSide).curve_(points.uCp, points.q2).length();
+  const lowerArmholePath = new Path().move(points.underArmSide).curve_(points.uCp, points.q2)
+  const lowerArmhole = lowerArmholePath.length();
   const armhole = lowerArmhole + new Path().move(points.q1)._curve(points.tCp, points.shoulderBack).length();
+
+  points.armholeNotch = lowerArmholePath.shiftAlong(armhole * sleeveNotchPercentage.back)
+
   store.set("backArmhole", armhole);
 
   paths.seamLines = new Path()
@@ -109,6 +113,7 @@ export default function (part) {
 
   // Complete?
   if (complete) {
+    snippets.backSleeveNotch = new Snippet('bnotch', points.armholeNotch);
 
     macro('grainline', {
       from: points.centerBackNeck.shift(DOWN, 1 * CM).shift(LEFT, 1 * CM),

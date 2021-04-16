@@ -1,4 +1,4 @@
-import { UP, LEFT, DOWN, RIGHT, BEAM, CM_FACTOR } from './constants';
+import { UP, LEFT, DOWN, RIGHT, BEAM, sleeveNotchPercentage } from './constants';
 
 export default function (part) {
   let {
@@ -154,8 +154,6 @@ export default function (part) {
     points[p] = points[p].rotate(frontAngle, points.a);
   }
 
-
-
   /*
     True waist darts
     - lengthen them by a bit,
@@ -185,8 +183,13 @@ export default function (part) {
   points.sideDartCenter = points.closed_f1.shiftFractionTowards(points.f2, 0.5)
   points.sideDartCenter = utils.beamsIntersect(points.f2, points.flippedSideWaist, points.v_side, points.sideDartCenter)
 
-  // ACTUALLY DRAW FRONT BODICE!!
+  // Calculate place of sleeve notch
+  points.armholeNotch = new Path()
+    .move(points.closed_frontUnderArm)
+    .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
+    .shiftAlong(armhole * sleeveNotchPercentage.front)
 
+  // ACTUALLY DRAW FRONT BODICE!!
   paths.saBase = new Path()
     .move(points.centerFrontWaist)
     ._curve(points.d1Cp, points.d1)
@@ -237,6 +240,7 @@ export default function (part) {
   // Complete?
   if (complete) {
     snippets.bustPoint = new Snippet('notch', points.v);
+    snippets.armholeNotch = new Snippet('notch', points.armholeNotch);
 
     macro('cutonfold', {
       from: points.centerFrontNeck,

@@ -1,4 +1,4 @@
-import { LEFT, DOWN, RIGHT, UP } from './constants';
+import { LEFT, DOWN, RIGHT, UP, sleeveNotchPercentage } from './constants';
 
 export default function (part) {
     let {
@@ -59,6 +59,18 @@ export default function (part) {
     points.k2CpR = points.k2.shift(RIGHT, 5 * CM);
     points.j3Cp = points.j3.shiftTowards(points.k, 5 * CM)
 
+    // Sleeve Notch Positions
+    points.backNotch = new Path()
+        .move(points.j3)
+        .curve(points.j3Cp, points.k2CpR, points.k2)
+        .shiftAlong(backArmhole * sleeveNotchPercentage.back);
+
+    points.frontNotch = new Path()
+        .move(points.j)
+        .curve(points.jCp, points.x1Cp1, points.x1)
+        .curve(points.x1Cp2, points.k2CpL, points.k2)
+        .shiftAlong(frontArmhole * sleeveNotchPercentage.front);
+
     paths.sleeve = new Path()
         .move(points.j)
         .line(points.p1)
@@ -68,6 +80,7 @@ export default function (part) {
         .curve(points.k2CpL, points.x1Cp2, points.x1)
         .curve(points.x1Cp1, points.jCp, points.j)
         .close()
+        .attr("class", "fabric")
 
 
     // Complete?
@@ -84,6 +97,8 @@ export default function (part) {
             title: 'Sleeve'
         });
 
+        snippets.frontNotch = new Snippet('notch', points.frontNotch);
+        snippets.backNotch = new Snippet('bnotch', points.backNotch);
 
         if (sa) {
             paths.sa = paths.sleeve.offset(sa).attr('class', 'fabric sa')
