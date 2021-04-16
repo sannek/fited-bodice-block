@@ -46,15 +46,17 @@ export default function (part) {
   - lengthen them by a bit,
   - calculate control points to curve waistline
 */
-  points.e1 = points.e1.shiftFractionTowards(points.eTip, -0.03);
+  const dartSize = points.e1.dist(points.e2);
+
+  points.e1 = points.e1.shiftFractionTowards(points.eTip, -0.001 * dartSize);
   let rightDartAngle = points.e1.angle(points.eTip);
   points.e1Cp = points.e1.shift(rightDartAngle - 90, 2 * CM);
 
-  points.e2 = points.e2.shiftFractionTowards(points.eTip, -0.03);
+  points.e2 = points.e2.shiftFractionTowards(points.eTip, -0.001 * dartSize);
   let leftDartAngle = points.e2.angle(points.eTip);
   points.e2Cp = points.e2.shift(leftDartAngle + 90, 2 * CM);
 
-  if (points.e1.dist(points.e2) > 1 * CM) {
+  if (dartSize > 1 * CM) {
     points.waistDartCenter = utils.beamsIntersect(points.e1Cp, points.e1, points.e2, points.e2Cp)
   } else {
     points.waistDartCenter = points.eCenter.copy()
