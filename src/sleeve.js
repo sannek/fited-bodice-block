@@ -67,13 +67,7 @@ export default function (part) {
         .curve(points.j3Cp, points.k2CpR, points.k2)
         .curve(points.k2CpL, points.x1Cp2, points.x1)
         .curve(points.x1Cp1, points.jCp, points.j)
-
-    let sleeveCapCirc = new Path()
-        .move(points.j3)
-        .curve(points.j3Cp, points.k2CpR, points.k2)
-        .curve(points.k2CpL, points.x1Cp2, points.x1)
-        .curve(points.x1Cp1, points.jCp, points.j)
-        .length()
+        .close()
 
 
     // Complete?

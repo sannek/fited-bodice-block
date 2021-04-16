@@ -233,10 +233,11 @@ export default function (part) {
     .line(points.d2)
     .attr('class', 'help')
 
-  snippets.bustPoint = new Snippet('bnotch', points.v);
 
   // Complete?
   if (complete) {
+    snippets.bustPoint = new Snippet('notch', points.v);
+
     macro('cutonfold', {
       from: points.centerFrontNeck,
       to: points.centerFrontWaist,

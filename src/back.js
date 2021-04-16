@@ -74,7 +74,7 @@ export default function (part) {
   const armhole = lowerArmhole + new Path().move(points.q1)._curve(points.tCp, points.shoulderBack).length();
   store.set("backArmhole", armhole);
 
-  paths.backBase = new Path()
+  paths.seamLines = new Path()
     .move(points.hpsBack)
     .line(points.shoulderBack)
     ._curve(points.tCp, points.q1)
@@ -88,6 +88,24 @@ export default function (part) {
     .curve_(points.e1Cp, points.centerBackWaist)
     .line(points.centerBackNeck)
     .curve(points.nCp, points.sCp, points.hpsBack)
+    .attr("class", "fabric")
+
+  paths.saBase = new Path()
+    .move(points.hpsBack)
+    .line(points.shoulderBack)
+    ._curve(points.tCp, points.q1)
+    .line(points.s5)
+    .line(points.q2)
+    ._curve(points.uCp, points.underArmSide)
+    .line(points.sideBackWaist)
+    ._curve(points.e2Cp, points.e2)
+    .line(points.waistDartCenter)
+    .line(points.e1)
+    .curve_(points.e1Cp, points.centerBackWaist)
+    .line(points.centerBackNeck)
+    .curve(points.nCp, points.sCp, points.hpsBack)
+    .setRender(false)
+
 
   // Complete?
   if (complete) {
@@ -96,7 +114,7 @@ export default function (part) {
       from: points.centerBackNeck.shift(DOWN, 1 * CM).shift(LEFT, 1 * CM),
       to: points.centerBackWaist.shift(UP, 1 * CM).shift(LEFT, 1 * CM),
       grainline: true
-    })
+    });
 
     points.titleAnchor = points.eTip.shift(UP, 5 * CM);
     macro('title', {
@@ -106,7 +124,7 @@ export default function (part) {
     });
 
     if (sa) {
-      paths.sa = paths.backBase.offset(sa).attr('class', 'fabric sa')
+      paths.sa = paths.saBase.offset(sa).attr('class', 'fabric sa')
     }
   }
 
