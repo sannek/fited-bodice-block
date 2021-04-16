@@ -123,7 +123,7 @@ export default function (part) {
   points.d1 = points.dCenter.shiftTowards(points.centerFrontWaist, frontDartSize / 2);
   points.d2 = points.dCenter.shiftTowards(points.sideFrontWaist, frontDartSize / 2);
 
-  // Move dart legs slightly away from bust point
+  // Move dart points slightly away from bust point
   points.v_side = points.v.shiftTowards(points.f1, 3 * CM)
   points.v_waist = points.v.shift(DOWN - frontAngle, 3 * CM);
 

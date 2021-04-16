@@ -41,6 +41,25 @@ export default function (part) {
   points.eCenter = points.e1.shift(LEFT, backDartSize / 2);
   points.eTip = points.eCenter.shift(UP, points.centerBackWaist.dist(points.b) - 2 * CM);
 
+  /*
+  True waist darts
+  - lengthen them by a bit,
+  - calculate control points to curve waistline
+*/
+  points.e1 = points.e1.shiftFractionTowards(points.eTip, -0.03);
+  let rightDartAngle = points.e1.angle(points.eTip);
+  points.e1Cp = points.e1.shift(rightDartAngle - 90, 2 * CM);
+
+  points.e2 = points.e2.shiftFractionTowards(points.eTip, -0.03);
+  let leftDartAngle = points.e2.angle(points.eTip);
+  points.e2Cp = points.e2.shift(leftDartAngle + 90, 2 * CM);
+
+  if (points.e1.dist(points.e2) > 1 * CM) {
+    points.waistDartCenter = utils.beamsIntersect(points.e1Cp, points.e1, points.e2, points.e2Cp)
+  } else {
+    points.waistDartCenter = points.eCenter.copy()
+  }
+
   // Armhole dart
   points.s2 = points.hpsBack.shiftFractionTowards(points.shoulderBack, 0.33)
   points.s5 = points.s2.shift(DOWN, 11 * CM);
@@ -61,10 +80,10 @@ export default function (part) {
     .line(points.q2)
     ._curve(points.uCp, points.underArmSide)
     .line(points.sideBackWaist)
-    .line(points.e2)
+    ._curve(points.e2Cp, points.e2)
     .line(points.eTip)
     .line(points.e1)
-    .line(points.centerBackWaist)
+    .curve_(points.e1Cp, points.centerBackWaist)
     .line(points.centerBackNeck)
     .curve(points.nCp, points.sCp, points.hpsBack)
 
