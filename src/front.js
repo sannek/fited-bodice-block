@@ -128,25 +128,32 @@ export default function (part) {
   points.v_waist = points.v.shift(DOWN - frontAngle, 3 * CM);
 
   // Rotate points so bodice CF is straight
-  points.hpsFront = points.hpsFront.rotate(frontAngle, points.a);
-  points.sCp = points.sCp.rotate(frontAngle, points.a)
-  points.mCp = points.mCp.rotate(frontAngle, points.a)
-  points.centerFrontNeck = points.centerFrontNeck.rotate(frontAngle, points.a)
-  points.centerFrontWaist = points.centerFrontWaist.rotate(frontAngle, points.a)
-  points.d1 = points.d1.rotate(frontAngle, points.a)
-  points.v = points.v.rotate(frontAngle, points.a)
-  points.v_waist = points.v_waist.rotate(frontAngle, points.a)
-  points.d2 = points.d2.rotate(frontAngle, points.a)
-  points.sideFrontWaist = points.sideFrontWaist.rotate(frontAngle, points.a)
-  points.f2 = points.f2.rotate(frontAngle, points.a)
-  points.dCenter = points.dCenter.rotate(frontAngle, points.a)
-  points.v_side = points.v_side.rotate(frontAngle, points.a)
-  points.closed_f1 = points.closed_f1.rotate(frontAngle, points.a)
-  points.closed_frontUnderArm = points.closed_frontUnderArm.rotate(frontAngle, points.a)
-  points.closed_uCp = points.closed_uCp.rotate(frontAngle, points.a)
-  points.closed_tCp = points.closed_tCp.rotate(frontAngle, points.a)
-  points.closed_t = points.closed_t.rotate(frontAngle, points.a)
-  points.u = points.u.rotate(frontAngle, points.a)
+  const frontBodicePoints = [
+    "hpsFront",
+    "sCp",
+    "mCp",
+    "centerFrontNeck",
+    "centerFrontWaist",
+    "d1",
+    "v",
+    "v_waist",
+    "d2",
+    "sideFrontWaist",
+    "f2",
+    "dCenter",
+    "v_side",
+    "closed_f1",
+    "closed_frontUnderArm",
+    "closed_uCp",
+    "closed_tCp",
+    "closed_t",
+    "u"
+  ]
+
+  for (let p of frontBodicePoints) {
+    points[p] = points[p].rotate(frontAngle, points.a);
+  }
+
 
 
   /*
