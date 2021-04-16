@@ -256,7 +256,7 @@ export default function (part) {
     });
 
     if (sa) {
-      paths.sa = paths.saBase.offset(sa).attr('class', 'fabric sa')
+      paths.sa = paths.saBase.offset(sa).close().attr('class', 'fabric sa')
     }
   }
 

@@ -69,6 +69,7 @@ export default function (part) {
 
   points.q1 = points.qCenter.shift(UP, 0.65 * CM)
   points.q2 = points.qCenter.shift(DOWN, 0.65 * CM)
+  points.qCenter = points.qCenter.shift(LEFT, 0.2 * CM)
 
   const lowerArmholePath = new Path().move(points.underArmSide).curve_(points.uCp, points.q2)
   const lowerArmhole = lowerArmholePath.length();
@@ -92,13 +93,17 @@ export default function (part) {
     .curve_(points.e1Cp, points.centerBackWaist)
     .line(points.centerBackNeck)
     .curve(points.nCp, points.sCp, points.hpsBack)
+    .close()
     .attr("class", "fabric")
+
+  paths.waistDart = new Path().move(points.e2).line(points.waistDartCenter).line(points.e1).attr("class", "help");
+  paths.shoulderDart = new Path().move(points.q1).line(points.qCenter).line(points.q2).attr("class", "help")
 
   paths.saBase = new Path()
     .move(points.hpsBack)
     .line(points.shoulderBack)
     ._curve(points.tCp, points.q1)
-    .line(points.s5)
+    .line(points.qCenter)
     .line(points.q2)
     ._curve(points.uCp, points.underArmSide)
     .line(points.sideBackWaist)
@@ -108,6 +113,7 @@ export default function (part) {
     .curve_(points.e1Cp, points.centerBackWaist)
     .line(points.centerBackNeck)
     .curve(points.nCp, points.sCp, points.hpsBack)
+    .close()
     .setRender(false)
 
 
