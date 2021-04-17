@@ -30,7 +30,7 @@ export default function (part) {
   const largeCup = store.get("largeCup");
   // Neckline curve control points
   points.mCp = points.centerFrontNeck.shift(RIGHT - frontAngle, HBW);
-  points.sCp = points.hpsFront.shift(DOWN - shoulderSlope, HBW * 0.5)
+  points.sCp = points.hpsFront.shift(DOWN - shoulderSlope - frontAngle, HBW * 0.8)
 
   // front shoulder dart points
   const frontShoulderWidth = points.hpsFront.dist(points.shoulderFront);
@@ -193,6 +193,10 @@ export default function (part) {
   points.centerFrontNeck = points.centerFrontNeck.shift(DOWN, 1.5 * CM);
   points.mCp = points.mCp.shift(DOWN, 1.5 * CM);
 
+  // Shift shoulder seam forward a bit
+  points.closed_t = points.closed_t.shiftTowards(points.closed_tCp, 1.2 * CM);
+  points.hpsFront = points.hpsFront.shiftTowards(points.sCp, 1.2 * CM);
+
   // ACTUALLY DRAW FRONT BODICE!!
   paths.saBase = new Path()
     .move(points.centerFrontWaist)
@@ -205,7 +209,6 @@ export default function (part) {
     .line(points.closed_f1)
     .line(points.closed_frontUnderArm)
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
-    .line(points.u)
     .line(points.hpsFront)
     .curve(points.sCp, points.mCp, points.centerFrontNeck)
     .setRender(false)
@@ -223,7 +226,6 @@ export default function (part) {
     .line(points.closed_f1)
     .line(points.closed_frontUnderArm)
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
-    .line(points.u)
     .line(points.hpsFront)
     .close()
     .attr('class', 'fabric')
