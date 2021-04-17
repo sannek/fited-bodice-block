@@ -79,7 +79,7 @@ export default function (part) {
   }
 
   points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  const underArmCP = 7 * CM * chestEaseFactor * chestEaseFactor;
+  const underArmCP = 9 * CM * chestEaseFactor * chestEaseFactor;
   points.uCp = points.frontUnderArm.shift(LEFT - frontAngle, underArmCP);
 
   // Rotate the shoulder dart closed.
@@ -188,6 +188,10 @@ export default function (part) {
     .move(points.closed_frontUnderArm)
     .curve(points.closed_uCp, points.closed_tCp, points.closed_t)
     .shiftAlong(armhole * sleeveNotchPercentage.front)
+
+  // lower front neckline a bit
+  points.centerFrontNeck = points.centerFrontNeck.shift(DOWN, 1.5 * CM);
+  points.mCp = points.mCp.shift(DOWN, 1.5 * CM);
 
   // ACTUALLY DRAW FRONT BODICE!!
   paths.saBase = new Path()
