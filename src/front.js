@@ -1,4 +1,4 @@
-import { UP, LEFT, DOWN, RIGHT, BEAM, sleeveNotchPercentage } from './constants';
+import { UP, LEFT, DOWN, RIGHT, BEAM, sleeveNotchPercentage, CM_FACTOR } from './constants';
 
 export default function (part) {
   let {
@@ -24,6 +24,7 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const HBW = chest / 20;
   const CM = store.get("CM");
+  const FB_CM = chest * CM_FACTOR;
 
   const frontAngle = store.get("frontAngle");
   const veryLargeCup = store.get("veryLargeCup")
@@ -42,9 +43,9 @@ export default function (part) {
   let shoulderDartSize = (chest - highBust) / 2;
   if (!veryLargeCup) {
     if (chest * chestEase < 6 * CM) {
-      shoulderDartSize += 4 * CM;
+      shoulderDartSize += 3 * CM;
     } else if (chest * chestEase < 10 * CM) {
-      shoulderDartSize += 2 * CM;
+      shoulderDartSize += 1.5 * CM;
     }
   }
 
@@ -58,7 +59,7 @@ export default function (part) {
   points.u1 = points.v.shiftTowards(points.u1a, points.v.dist(points.u));
 
   const shoulderDartAngle = points.u.angle(points.v) - points.u1.angle(points.v);
-  const shoulderCP = 7 * CM * chestEaseFactor * chestEaseFactor;
+  const shoulderCP = 7 * FB_CM * chestEaseFactor * chestEaseFactor;
   points.t = points.u1.shift(RIGHT - shoulderSlope - frontAngle - shoulderDartAngle, frontShoulderWidth / 2);
   points.tCp = points.t.shift(DOWN - shoulderSlope - frontAngle - shoulderDartAngle, shoulderCP);
 
@@ -71,15 +72,15 @@ export default function (part) {
   /* with a very large bust size the side dart ends up way too large
   but if the bust point is high there might not be enough space
   between the underside of the armhole and the top leg of the side dart */
-
-  let lowerFrontUnderArm = veryLargeCup ? 3 * CM : 2 * CM;
+  let largeBust = chest > 120 * CM;
+  let lowerFrontUnderArm = (largeBust || veryLargeCup) ? 2 * FB_CM : 1 * FB_CM;
   const sideDartToUnderarm = points.f1.dist(points.underArmSide);
   if (sideDartToUnderarm - lowerFrontUnderArm <= 3.5 * CM) {
     lowerFrontUnderArm = Math.max(sideDartToUnderarm - 3.5 * CM, 0)
   }
 
   points.frontUnderArm = points.underArmSide.shiftTowards(points.sideFrontWaist, lowerFrontUnderArm);
-  const underArmCP = 7 * CM * chestEaseFactor * chestEaseFactor;
+  const underArmCP = 7 * FB_CM * chestEaseFactor * chestEaseFactor;
   points.uCp = points.frontUnderArm.shift(LEFT - frontAngle, underArmCP);
 
   // Rotate the shoulder dart closed.

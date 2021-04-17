@@ -29,6 +29,7 @@ export default function (part) {
   const chestEaseFactor = 1 + chestEase;
   const waistEaseFactor = 1 + waistEase;
 
+  const FB_CM = chest * CM_FACTOR;
   const CM = highBust * CM_FACTOR;
   store.set("CM", CM);
 
@@ -42,7 +43,7 @@ export default function (part) {
 
   // set up measurements already for half pattern
   const finalChest = 0.5 * chest * chestEaseFactor;
-  let finalFrontChest = 0.5 * finalChest + 2 * CM;
+  let finalFrontChest = 0.5 * finalChest + 2 * FB_CM;
   finalFrontChest += veryLargeCup ? + 2 * CM : 0;
   const finalBackChest = finalChest - finalFrontChest;
   const finalWaist = 0.5 * waist * waistEaseFactor;
