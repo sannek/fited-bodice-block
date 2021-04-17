@@ -30,8 +30,9 @@ export default function (part) {
 
   const sideSeamAngle = 90 - points.sideBackWaist.angle(points.underArmSide);
 
+  points.tCp = points.shoulderBack.shift(DOWN + shoulderSlope, HBW * 0.4);
   points.uCp = points.underArmSide.shift(RIGHT - sideSeamAngle, HBW * 1.5 * chestEaseFactor);
-  points.tCp = points.shoulderBack.shift(DOWN + shoulderSlope, HBW * 1.2);
+  points.q1Cp = points.shoulderBack.shift(DOWN + shoulderSlope, HBW * 1.2);
 
   // Back waist dart
   const backDartSize = points.sideBackWaist.dist(points.centerBackWaist) - store.get("finalBackWaist");
@@ -65,7 +66,7 @@ export default function (part) {
   // Armhole dart
   points.s2 = points.hpsBack.shiftFractionTowards(points.shoulderBack, 0.33)
   points.s5 = points.s2.shift(DOWN, 11 * CM);
-  points.qCenter = utils.curveIntersectsY(points.underArmSide, points.uCp, points.tCp, points.shoulderBack, points.s5.y);
+  points.qCenter = utils.curveIntersectsY(points.underArmSide, points.uCp, points.q1Cp, points.shoulderBack, points.s5.y);
 
   points.q1 = points.qCenter.shift(UP, 0.65 * CM)
   points.q2 = points.qCenter.shift(DOWN, 0.65 * CM)
@@ -73,16 +74,20 @@ export default function (part) {
 
   const lowerArmholePath = new Path().move(points.underArmSide).curve_(points.uCp, points.q2)
   const lowerArmhole = lowerArmholePath.length();
-  const armhole = lowerArmhole + new Path().move(points.q1)._curve(points.tCp, points.shoulderBack).length();
+  const armhole = lowerArmhole + new Path().move(points.q1)._curve(points.q1Cp, points.shoulderBack).length();
 
   points.armholeNotch = lowerArmholePath.shiftAlong(armhole * sleeveNotchPercentage.back)
 
   store.set("backArmhole", armhole);
 
+  // Shift shoulder seam forward a bit
+  points.hpsBack = points.hpsBack.shiftTowards(points.sCp, -1.2 * CM);
+  points.shoulderBack = points.shoulderBack.shiftTowards(points.tCp, -1.2 * CM);
+
   paths.seamLines = new Path()
     .move(points.hpsBack)
     .line(points.shoulderBack)
-    ._curve(points.tCp, points.q1)
+    ._curve(points.q1Cp, points.q1)
     .line(points.s5)
     .line(points.q2)
     ._curve(points.uCp, points.underArmSide)
@@ -102,7 +107,7 @@ export default function (part) {
   paths.saBase = new Path()
     .move(points.hpsBack)
     .line(points.shoulderBack)
-    ._curve(points.tCp, points.q1)
+    .curve(points.tCp, points.q1Cp, points.q1)
     .line(points.qCenter)
     .line(points.q2)
     ._curve(points.uCp, points.underArmSide)

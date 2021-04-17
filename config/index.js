@@ -38,7 +38,8 @@ export default {
     "shoulderToShoulder",
     "shoulderToElbow",
     "shoulderToWrist",
-    "wrist"
+    "wrist",
+    "biceps"
   ],
   dependencies: {
     base: "neckBase",

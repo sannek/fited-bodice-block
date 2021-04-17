@@ -18,12 +18,25 @@ export default function (part) {
         utils
     } = part.shorthand()
 
-    const { shoulderToElbow, shoulderToWrist, wrist } = measurements;
+    const { shoulderToElbow, shoulderToWrist, wrist, biceps } = measurements;
+    const bicepsEasePercentage = 0.1
     const backArmhole = store.get("backArmhole");
     const frontArmhole = store.get("frontArmhole");
     const CM = 0.022 * (frontArmhole + backArmhole);
-    const sleeveWidth = (frontArmhole + backArmhole) * 0.8;
     const fullWrist = wrist * 1.3;
+    const fullBiceps = biceps * 1.1;
+
+    let sleeveWidth = (frontArmhole + backArmhole) * 0.8;
+    let sleeveCapHeight = 0.33 * sleeveWidth + 1 * CM
+    const bicepsCircumference = biceps * (1 + bicepsEasePercentage);
+    const sleeveEase = sleeveWidth - bicepsCircumference
+
+    if (sleeveEase < 0) {
+        console.log("TOO TIGHT - ADJUSTING")
+        console.log({ sleeveWidth, bicepsCircumference })
+        sleeveWidth = bicepsCircumference;
+        sleeveCapHeight = sleeveCapHeight + 0.5 * sleeveEase;
+    }
 
     // SLEEVE GUIDEPOINTS
     points.origin = new Point(0, 0);
@@ -40,7 +53,6 @@ export default function (part) {
     points.p1 = points.p.shift(LEFT, 0.5 * fullWrist)
     points.p2 = points.p.shift(RIGHT, 0.5 * fullWrist).shift(DOWN, CM);
 
-    const sleeveCapHeight = 0.33 * sleeveWidth + 1 * CM
     points.j = points.j1.shift(DOWN, sleeveCapHeight);
     points.j3 = points.j2.shift(DOWN, sleeveCapHeight);
 
