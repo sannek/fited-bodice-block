@@ -7,8 +7,6 @@ import draftBase from "./base";
 import draftFront from "./front";
 import draftSleeve from "./sleeve";
 
-console.log("testing modified file");
-
 // Create new design
 const Pattern = new freesewing.Design(config, plugins);
 
